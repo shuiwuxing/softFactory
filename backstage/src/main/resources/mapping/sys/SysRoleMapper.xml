@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yang.phone.mapper.UserMapper">
+ 
+  <select id="findDataById" resultType="com.yang.phone.model.User">
+    select * from sys_role
+    WHERE role_id=#{roleId}
+  </select>
+  <select id="findAllData" resultType="java.util.Map">
+    select * from sys_role WHERE 1=1
+    <if test=" role_name!=null and role_name!='' ">
+      and role_name=#{roleName}
+    </if>
+  </select>
+
+  <insert id="addData">
+    INSERT INTO sys_role
+         (
+           role_id,
+           role_name,
+           role_code,
+           create_time,
+           update_time,
+           remark,
+           status
+         ) VALUES (
+           #{roleId},
+           #{roleName},
+           #{roleCode},
+           #{createTime},
+           #{updateTime},
+           #{remark},
+           #{status}
+           );
+  </insert>
+  <update id="updateData">
+    UPDATE sys_role
+     <set>
+         <if test="#{roleName}!=''">role_name=#{roleName},</if>
+         <if test="#{remark}!=''"> remark=#{remark},</if>
+         <if test="#{status}!=''"> status=#{status},</if>
+    </set>
+      WHERE (role_id=#{roleId});
+  </update>
+    <delete id="deleteData">
+        delete FROM sys_role where role_id=#{roleId}
+    </delete>
+</mapper>

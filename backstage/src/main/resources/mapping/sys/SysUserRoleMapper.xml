@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yang.phone.mapper.sys.SysUserRoleMapper">
+
+  <select id="findAllData" resultType="java.util.Map">
+     select * from sys_user_role WHERE uid=#{uid}
+  </select>
+  <insert id="addData">
+    INSERT INTO sys_user_role
+         (
+           uid,
+           role_id
+         )VALUES(
+           #{uid},
+           #{roleId}
+         );
+  </insert>
+    <delete id="deleteData">
+        delete FROM sys_user_role where uid=#{uid}
+    </delete>
+ 
+</mapper>

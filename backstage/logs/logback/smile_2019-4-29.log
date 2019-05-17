@@ -1,0 +1,18 @@
+2019-4-29 23:38:52 main INFO Starting PhoneApplication on USER-20171107XE with PID 8064 (E:\java\phone\phone\target\classes started by Administrator in E:\java\phone\phone)
+2019-4-29 23:38:52 main DEBUG Running with Spring Boot v2.1.1.RELEASE, Spring v5.1.3.RELEASE
+2019-4-29 23:38:52 main INFO No active profile set, falling back to default profiles: default
+2019-4-29 23:38:56 main INFO Started PhoneApplication in 5.109 seconds (JVM running for 6.58)
+2019-4-29 23:39:17 http-nio-8080-exec-1 DEBUG ==>  Preparing: select * from user WHERE 1=1 and name=? 
+2019-4-29 23:39:17 http-nio-8080-exec-1 DEBUG ==> Parameters: null
+2019-4-29 23:39:17 http-nio-8080-exec-1 DEBUG <==      Total: 0
+2019-4-29 23:45:13 main INFO Starting PhoneApplication on USER-20171107XE with PID 10128 (E:\java\phone\phone\target\classes started by Administrator in E:\java\phone\phone)
+2019-4-29 23:45:13 main DEBUG Running with Spring Boot v2.1.1.RELEASE, Spring v5.1.3.RELEASE
+2019-4-29 23:45:13 main INFO No active profile set, falling back to default profiles: default
+2019-4-29 23:45:16 main INFO Started PhoneApplication in 3.276 seconds (JVM running for 4.586)
+2019-4-29 23:45:24 http-nio-8080-exec-1 DEBUG ==>  Preparing: select * from user WHERE 1=1 
+2019-4-29 23:45:24 http-nio-8080-exec-1 DEBUG ==> Parameters: 
+2019-4-29 23:45:24 http-nio-8080-exec-1 DEBUG <==      Total: 3
+2019-4-29 23:59:43 main INFO Starting PhoneApplication on USER-20171107XE with PID 7664 (E:\java\phone\phone\target\classes started by Administrator in E:\java\phone\phone)
+2019-4-29 23:59:43 main DEBUG Running with Spring Boot v2.1.1.RELEASE, Spring v5.1.3.RELEASE
+2019-4-29 23:59:43 main INFO No active profile set, falling back to default profiles: default
+2019-4-29 23:59:45 main INFO Started PhoneApplication in 3.648 seconds (JVM running for 4.968)
