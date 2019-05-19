@@ -1,10 +1,10 @@
-package com.yang.phone.controller;
+package com.yang.phone.controller.sys;
 import com.github.pagehelper.PageInfo;
 import com.yang.phone.common.ResultMessage;
 import com.yang.phone.service.sys.SysUserService;
 import org.apache.shiro.authz.annotation.RequiresGuest;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -13,13 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@EnableAutoConfiguration
 @RequestMapping("user")
 public class UserController {
+
     @Autowired
     public SysUserService sysUserService;
 
     @RequestMapping("/getuserinfo")
+    @RequiresPermissions(value = "root:user_list")
     @ResponseBody
     public ResultMessage getUserInfo(@RequestBody Map<String,Object> params) {
         String uid=params.get("uid").toString();
@@ -53,10 +54,4 @@ public class UserController {
         return new ResultMessage();
     }
 
-    @RequestMapping("/login")
-    @ResponseBody
-    public ResultMessage login(@RequestBody Map<String,Object> params) {
-        Map<String,Object> user= sysUserService.login(params);
-        return new ResultMessage(user);
-    }
 }

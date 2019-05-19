@@ -12,7 +12,6 @@ import java.util.Map;
  * @date 2019年05月02月
  *
  * **/
-@Service
 public interface SysUserService {
 
     public Map<String,Object> login(Map<String, Object> params);

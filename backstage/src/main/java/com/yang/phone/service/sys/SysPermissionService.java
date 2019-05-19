@@ -1,5 +1,7 @@
 package com.yang.phone.service.sys;
 
+import com.github.pagehelper.PageInfo;
+
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +15,7 @@ public interface SysPermissionService {
 
     public Map<String,Object> findDataById(String id);
 
-    public List<Map<String,Object>> findAllData(Map<String, Object> params);
+    public PageInfo<Map<String,Object>> findAllData(Map<String, Object> params);
 
     public int  addData(Map<String, Object> params);
 

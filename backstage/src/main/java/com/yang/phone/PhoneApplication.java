@@ -16,6 +16,7 @@ import javax.sql.DataSource;
 public class PhoneApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(PhoneApplication.class, args);
+		System.out.print("启动成功");
 	}
 }
 

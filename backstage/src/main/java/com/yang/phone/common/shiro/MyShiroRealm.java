@@ -1,4 +1,5 @@
 package com.yang.phone.common.shiro;
+import com.yang.phone.mapper.sys.SysUserMapper;
 import com.yang.phone.service.sys.SysRoleService;
 import com.yang.phone.service.sys.SysUserService;
 import org.apache.shiro.authc.AuthenticationException;
@@ -10,13 +11,22 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class MyShiroRealm extends AuthorizingRealm {
+
+    @Autowired
+    public SysUserMapper sysUserMapper;
+
     @Autowired
     public SysUserService sysUserService;
+
     @Autowired
     private SysRoleService sysRoleService;
 
@@ -28,8 +38,7 @@ public class MyShiroRealm extends AuthorizingRealm {
         String name= (String) principalCollection.getPrimaryPrincipal();
         //查询用户名称
         Map<String,Object> params=new HashMap<>();
-        params.put("name",name);
-        Map<String,Object> user = sysUserService.login(params);
+        Map<String,Object> user = sysUserMapper.findUserInfo(name);
         //添加角色和权限
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         List<Map<String,Object>> roles=sysUserService.findRole(user);
@@ -54,7 +63,7 @@ public class MyShiroRealm extends AuthorizingRealm {
         }
         //获取用户信息
         String name = authenticationToken.getPrincipal().toString();
-        Map<String,Object> user =null ;
+        Map<String,Object> user =sysUserMapper.findUserInfo(name) ;
         if (user == null) {
             //这里返回后会报出对应异常
             return null;

@@ -32,7 +32,7 @@ public class ShiroController {
     public String ajaxLogin(@RequestBody Map<String,Object> params) {
         JSONObject jsonObject = new JSONObject();
         Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken token = new UsernamePasswordToken(params.get("userName").toString(),params.get("passwrod").toString());
+        UsernamePasswordToken token = new UsernamePasswordToken(params.get("loginId").toString(),params.get("password").toString());
         try {
             subject.login(token);
             jsonObject.put("token", subject.getSession().getId());
@@ -61,4 +61,19 @@ public class ShiroController {
         map.put("msg", "未登录");
         return map;
     }
+
+    /**
+     * 未登录，shiro应重定向到登录界面，此处返回未登录状态信息由前端控制跳转页面
+     * @return
+     */
+    @RequestMapping(value = "/unauthorized")
+    @ResponseBody
+    public Object unauthorized(){
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("code", "1000000");
+        map.put("msg", "未授权");
+        return map;
+    }
+
+
 }

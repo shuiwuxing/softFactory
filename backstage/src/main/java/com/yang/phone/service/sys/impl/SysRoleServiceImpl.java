@@ -4,7 +4,10 @@ import com.yang.phone.mapper.sys.SysRoleMapper;
 import com.yang.phone.mapper.sys.SysRolePermissionMapper;
 import com.yang.phone.service.sys.SysRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 

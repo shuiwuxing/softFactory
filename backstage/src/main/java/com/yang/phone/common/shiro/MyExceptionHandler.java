@@ -12,7 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Administrator on 2017/12/11.
+ * JIANHUI YANG
+ * @date 2019年05月18日
+ *
  * 全局异常处理
  */
 public class MyExceptionHandler implements HandlerExceptionResolver {
