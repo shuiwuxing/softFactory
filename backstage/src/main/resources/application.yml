@@ -3,9 +3,9 @@ server:
 spring:
     datasource:
         name: test
-        url: jdbc:mysql://127.0.0.1:3306/phone?serverTimezone=GMT%2B8
+        url: jdbc:mysql://47.97.252.175:3306/soft_factory?serverTimezone=GMT%2B8
         username: root
-        password: 123456
+        password: Yang0506
         # 使用druid数据源
         type: com.alibaba.druid.pool.DruidDataSource
         driver-class-name: com.mysql.jdbc.Driver
@@ -37,8 +37,8 @@ pagehelper:
 
 redis:
   shiro:
-    host: 127.0.0.1
+    host: 47.97.252.175
     port: 6379
     timeout: 0
-    password:
+    password: yang0506
 
