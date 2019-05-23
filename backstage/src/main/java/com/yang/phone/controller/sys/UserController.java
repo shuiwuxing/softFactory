@@ -2,8 +2,8 @@ package com.yang.phone.controller.sys;
 import com.github.pagehelper.PageInfo;
 import com.yang.phone.common.ResultMessage;
 import com.yang.phone.service.sys.SysUserService;
-import org.apache.shiro.authz.annotation.RequiresGuest;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +28,7 @@ public class UserController {
         return new ResultMessage(user);
     }
     @RequestMapping("/userList")
-    @RequiresGuest
+    @RequiresUser
     @ResponseBody
     public ResultMessage userList(@RequestBody Map<String,Object> params) {
         PageInfo<Map<String,Object>> user= sysUserService.findAll(params);

@@ -9,6 +9,7 @@ import org.crazycake.shiro.RedisCacheManager;
 import org.crazycake.shiro.RedisManager;
 import org.crazycake.shiro.RedisSessionDAO;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,15 @@ import java.util.Map;
 
 @Configuration
 public class ShiroConfig {
+
+    @Value("${redis.shiro.host}")
+    private String host;
+    @Value("${redis.shiro.port}")
+    private int port;
+    @Value("${redis.shiro.timeout}")
+    private int timeout;
+    @Value("${redis.shiro.password}")
+    private String password;
 
     //Filter工厂，设置对应的过滤条件和跳转条件
     @Bean
@@ -95,9 +105,13 @@ public class ShiroConfig {
      *
      * @return
      */
-    @ConfigurationProperties(prefix = "redis.shiro")
     public RedisManager redisManager() {
-        return new RedisManager();
+        RedisManager redisManager=new RedisManager();
+        redisManager.setHost(host);
+        redisManager.setPort(port);
+        redisManager.setTimeout(timeout);
+        redisManager.setPassword(password);
+        return redisManager;
     }
 
     /**
@@ -110,9 +124,8 @@ public class ShiroConfig {
     @Bean
     public RedisCacheManager cacheManager() {
         RedisCacheManager redisCacheManager = new RedisCacheManager();
-        RedisManager r=redisManager();
-        System.out.print("@@@@@"+r.getHost());
-        redisCacheManager.setRedisManager(r);
+        RedisManager r=  redisManager();
+        redisCacheManager.setRedisManager(redisManager());
         return redisCacheManager;
     }
 
