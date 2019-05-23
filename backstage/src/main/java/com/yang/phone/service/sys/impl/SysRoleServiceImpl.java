@@ -1,5 +1,7 @@
 package com.yang.phone.service.sys.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.yang.phone.mapper.sys.SysRoleMapper;
 import com.yang.phone.mapper.sys.SysRolePermissionMapper;
 import com.yang.phone.service.sys.SysRoleService;
@@ -26,8 +28,11 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     @Override
-    public List<Map<String, Object>> findAllData(Map<String, Object> params) {
-        return sysRoleMapper.findAllData(params);
+    public PageInfo<Map<String, Object>> findAllData(Map<String, Object> params) {
+        PageHelper.startPage(params);
+        List<Map<String,Object>> list= sysRoleMapper.findAllData(params);
+        PageInfo<Map<String, Object>> page = new PageInfo<Map<String, Object>>(list);
+        return page;
     }
 
     @Override

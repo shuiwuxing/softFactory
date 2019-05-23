@@ -52,5 +52,4 @@ public class PermissionController {
         sysPermissionService.deleteData(uid);
         return new ResultMessage();
     }
-
 }
