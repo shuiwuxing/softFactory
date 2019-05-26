@@ -29,6 +29,7 @@ public class SysUserServiceImpl implements SysUserService {
         Subject subject = SecurityUtils.getSubject();
         subject.login(new UsernamePasswordToken(params.get("loginId").toString(), params.get("password").toString()));
         //return userMapper.login(params);
+
         Map<String,Object> result=new HashMap<>();
         result.put("code","登录成功");
         return  result;

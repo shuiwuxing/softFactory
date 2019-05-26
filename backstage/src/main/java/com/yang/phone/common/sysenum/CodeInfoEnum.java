@@ -4,9 +4,14 @@ public enum CodeInfoEnum {
 
     //成功
     suss200(200, "响应成功"),
+    //user相关
+    error2001(2001, "密码错误"),
+    error2002(2002, "登录失败，该用户已被冻结"),
+    error2003(2003, "该用户不存在"),
+
     //错误信息
     error1000(1000, "参数错误"),
-    error1001(1001, "参数错误");
+    error1002(1002, "参数错误");
 
     private Integer code;
     private String message;

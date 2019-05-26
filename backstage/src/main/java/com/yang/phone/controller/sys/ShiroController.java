@@ -1,12 +1,16 @@
 package com.yang.phone.controller.sys;
 
-import com.alibaba.fastjson.JSONObject;
+
+import com.yang.phone.common.ResultMessage;
+import com.yang.phone.common.sysenum.CodeInfoEnum;
+import com.yang.phone.service.sys.SysUserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +26,9 @@ import java.util.Map;
 @Controller
 public class ShiroController {
 
+    @Autowired
+    SysUserService sysUserService;
+
     /**
      * 登录方法
      * @param
@@ -29,24 +36,23 @@ public class ShiroController {
      */
     @RequestMapping(value = "/ajaxLogin", method = RequestMethod.POST)
     @ResponseBody
-    public String ajaxLogin(@RequestBody Map<String,Object> params) {
-        JSONObject jsonObject = new JSONObject();
+    public ResultMessage ajaxLogin(@RequestBody Map<String,Object> params) {
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(params.get("loginId").toString(),params.get("password").toString());
         try {
-            subject.login(token);
-            jsonObject.put("token", subject.getSession().getId());
-            jsonObject.put("msg", "登录成功");
+
+            sysUserService.login(params);
+
         } catch (IncorrectCredentialsException e) {
-            jsonObject.put("msg", "密码错误");
+            return new ResultMessage(2001, CodeInfoEnum.getPaymentType(2001).getMessage(),null);
         } catch (LockedAccountException e) {
-            jsonObject.put("msg", "登录失败，该用户已被冻结");
+            return new ResultMessage(2002, CodeInfoEnum.getPaymentType(2002).getMessage(),null);
         } catch (AuthenticationException e) {
-            jsonObject.put("msg", "该用户不存在");
+            return new ResultMessage(2003, CodeInfoEnum.getPaymentType(2003).getMessage(),null);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return jsonObject.toString();
+         return new ResultMessage();
     }
 
     /**
