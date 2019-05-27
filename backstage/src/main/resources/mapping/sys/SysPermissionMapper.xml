@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.yang.phone.mapper.UserMapper">
+<mapper namespace="com.yang.phone.mapper.sys.SysPermissionMapper">
  
-  <select id="findUserInfo" resultType="com.yang.phone.model.User">
+  <select id="findDataById" resultType="java.util.Map">
     select * from sys_user
     WHERE uid=#{uid}
   </select>
-  <select id="findAlluser" resultType="java.util.Map">
-    select * from sys_user WHERE 1=1
-    <if test=" name!=null and name!='' ">
-      and name=#{name}
-    </if>
+  <select id="findAllData" resultType="java.util.Map">
+    select sp.* from sys_permission sp
+    LEFT JOIN sys_role_permission srp on sp.permission_id=srp.permission_id
+    LEFT JOIN sys_user_role sur on sur.role_id= srp.role_id
+      WHERE 1=1
+      <if test=" name!=null and name!='' ">
+      and sur.name=#{name}
+      </if>
+      <if test=" uid!=null and uid!='' ">
+          and sur.uid=#{uid}
+      </if>
   </select>
-  <insert id="addUser">
+  <insert id="addData">
     INSERT INTO sys_user
          (uid,
           name,
           age,
           address,
           login_id,
-          'password'
+          `password`
          ) VALUES (
            #{uid},
            #{name},
@@ -28,7 +34,7 @@
            #{loginId},
            #{password});
   </insert>
-  <update id="updateUser">
+  <update id="updateData">
     UPDATE sys_user
      <set>
          <if test="#{name}!=''">name=#{name},</if>
@@ -39,7 +45,7 @@
     </set>
       WHERE (uid=#{uid});
   </update>
-    <delete id="deleteUser">
+    <delete id="deleteData">
         delete FROM sys_user where uid=#{uid}
     </delete>
  

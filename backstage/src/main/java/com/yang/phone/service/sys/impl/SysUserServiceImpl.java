@@ -2,6 +2,7 @@ package com.yang.phone.service.sys.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.yang.phone.mapper.sys.SysPermissionMapper;
 import com.yang.phone.mapper.sys.SysUserMapper;
 import com.yang.phone.mapper.sys.SysUserRoleMapper;
 import com.yang.phone.service.sys.SysUserService;
@@ -22,16 +23,21 @@ public class SysUserServiceImpl implements SysUserService {
     private SysUserMapper sysUserMapper;
     @Autowired
     private SysUserRoleMapper sysUserRoleMapper;
+    @Autowired
+    private SysPermissionMapper sysPermissionMapper;
 
     @Override
     public Map<String, Object> login(Map<String, Object> params) {
         // 获取主体
         Subject subject = SecurityUtils.getSubject();
         subject.login(new UsernamePasswordToken(params.get("loginId").toString(), params.get("password").toString()));
-        //return userMapper.login(params);
-
+        Map<String,Object> user =  (Map<String,Object>)SecurityUtils.getSubject().getPrincipal();
+        Map<String,Object> condition=new HashMap<>();
+        condition.put("uid",user.get("uid"));
+        List<Map<String,Object>> permissions= sysPermissionMapper.findAllData(condition);
         Map<String,Object> result=new HashMap<>();
-        result.put("code","登录成功");
+        result.put("userinfo",user);
+        result.put("menu",permissions);
         return  result;
     }
 

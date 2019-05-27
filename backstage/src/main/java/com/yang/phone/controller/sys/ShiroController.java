@@ -37,12 +37,9 @@ public class ShiroController {
     @RequestMapping(value = "/ajaxLogin", method = RequestMethod.POST)
     @ResponseBody
     public ResultMessage ajaxLogin(@RequestBody Map<String,Object> params) {
-        Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken token = new UsernamePasswordToken(params.get("loginId").toString(),params.get("password").toString());
+        Map<String,Object> result=null;
         try {
-
-            sysUserService.login(params);
-
+            result= sysUserService.login(params);
         } catch (IncorrectCredentialsException e) {
             return new ResultMessage(2001, CodeInfoEnum.getPaymentType(2001).getMessage(),null);
         } catch (LockedAccountException e) {
@@ -52,7 +49,7 @@ public class ShiroController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-         return new ResultMessage();
+         return new ResultMessage(result);
     }
 
     /**
