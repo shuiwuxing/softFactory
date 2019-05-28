@@ -6,7 +6,6 @@ import com.yang.phone.mapper.sys.SysPermissionMapper;
 import com.yang.phone.mapper.sys.SysRolePermissionMapper;
 import com.yang.phone.service.sys.SysPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

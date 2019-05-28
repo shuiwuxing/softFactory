@@ -106,7 +106,7 @@ public class ShiroConfig {
      * @return
      */
     public RedisManager redisManager() {
-        RedisManager redisManager=new RedisManager();
+        RedisManager redisManager= new RedisManager();
         redisManager.setHost(host);
         redisManager.setPort(port);
         redisManager.setTimeout(timeout);

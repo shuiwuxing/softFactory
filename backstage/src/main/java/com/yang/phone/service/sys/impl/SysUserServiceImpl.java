@@ -12,9 +12,11 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class SysUserServiceImpl implements SysUserService {
@@ -37,7 +39,7 @@ public class SysUserServiceImpl implements SysUserService {
         List<Map<String,Object>> permissions= sysPermissionMapper.findAllData(condition);
         Map<String,Object> result=new HashMap<>();
         result.put("userinfo",user);
-        result.put("menu",permissions);
+        result.put("menu",handMenu("0",permissions));
         return  result;
     }
 
@@ -72,5 +74,15 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public int deleteUser(String uid) {
         return sysUserMapper.deleteUser(uid);
+    }
+
+    private List<Map<String,Object>> handMenu(String id,List<Map<String,Object>> permissions){
+        List<Map<String,Object>> result=new ArrayList<>();
+        List<Map<String,Object>> list=  permissions.stream().filter(map ->map.get("parent_id").toString().equals(id)).collect(Collectors.toList());
+        for(Map<String,Object> item:list){
+            item.put("nodes",handMenu(item.get("permission_id").toString(),permissions));
+            result.add(item);
+        }
+      return result;
     }
 }
