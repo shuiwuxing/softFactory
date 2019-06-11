@@ -1,8 +1,10 @@
 package com.yang.phone.mapper.sys;
 
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.Map;
-
+@Repository
 public interface SysRolePermissionMapper {
 
     public List<Map<String,Object>> findAllData(Map<String, Object> params);
