@@ -17,8 +17,8 @@ public class ResultMessage {
         this.data=obj;
     }
     public ResultMessage(int code,String message,Object obj){
-        this.code= CodeInfoEnum.suss200.getCode();
-        this.message= CodeInfoEnum.suss200.getMessage();
+        this.code= code;
+        this.message= message;
         this.data=obj;
     }
 
