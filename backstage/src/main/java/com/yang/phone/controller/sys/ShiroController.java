@@ -51,7 +51,14 @@ public class ShiroController {
            return  new ResultMessage(2004, CodeInfoEnum.getPaymentType(2004).getMessage(),null);
         }
     }
-
+    @RequestMapping(value = "/getToken")
+    @ResponseBody
+    public Object getToken() {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("code", "1000000");
+        map.put("msg", "未登录");
+        return map;
+    }
     /**
      * 未登录，shiro应重定向到登录界面，此处返回未登录状态信息由前端控制跳转页面
      * @return
