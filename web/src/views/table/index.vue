@@ -13,46 +13,54 @@
           {{ scope.$index }}
         </template>
       </el-table-column>
-      <el-table-column label="Title">
+      <el-table-column label="用户名">
         <template slot-scope="scope">
-          {{ scope.row.title }}
+          {{ scope.row.login_id }}
         </template>
       </el-table-column>
-      <el-table-column label="Author" width="110" align="center">
+      <el-table-column label="真实姓名" width="110" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
+          <span>{{ scope.row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Pageviews" width="110" align="center">
+      <el-table-column label="年龄" width="110" align="center">
         <template slot-scope="scope">
-          {{ scope.row.pageviews }}
+          {{ scope.row.age }}
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="Status" width="110" align="center">
+      <!-- <el-table-column class-name="status-col" label="Status" width="110" align="center">
         <template slot-scope="scope">
           <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
         </template>
-      </el-table-column>
-      <el-table-column align="center" prop="created_at" label="Display_time" width="200">
+      </el-table-column> -->
+      <el-table-column align="center" prop="created_at" label="地址" width="200">
         <template slot-scope="scope">
           <i class="el-icon-time" />
-          <span>{{ scope.row.display_time }}</span>
+          <span>{{ scope.row.address }}</span>
         </template>
       </el-table-column>
     </el-table>
+     <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="total"
+        :current-page="currentPage"
+        :page-size="2"
+        @current-change="handleCurrentChange"
+       >
+      </el-pagination>
   </div>
 </template>
 
 <script>
-import { getList } from '@/api/table'
+import { list } from '@/api/user'
 
 export default {
   filters: {
     statusFilter(status) {
       const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
+        1: '男',
+        2: '女'
       }
       return statusMap[status]
     }
@@ -60,17 +68,32 @@ export default {
   data() {
     return {
       list: null,
-      listLoading: true
+      listLoading: true,
+      total: 0,
+      currentPage:1,
+      params:{
+        list:{
+           "pageNum":"1", 
+           "pageSize":"2"
+        }
+
+      }
     }
   },
   created() {
     this.fetchData()
   },
   methods: {
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.params.list.pageNum=val
+      this.fetchData()
+    },
     fetchData() {
       this.listLoading = true
-      getList().then(response => {
-        this.list = response.data.items
+      list(this.params.list).then(response => {
+        this.list = response.data.list
+        this.total=response.data.total
         this.listLoading = false
       })
     }
