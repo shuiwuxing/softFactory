@@ -32,7 +32,8 @@ public class SysUserServiceImpl implements SysUserService {
     public Map<String, Object> login(Map<String, Object> params) {
         // 获取主体
         Subject subject = SecurityUtils.getSubject();
-        subject.login(new UsernamePasswordToken(params.get("loginId").toString(), params.get("password").toString()));
+        UsernamePasswordToken upt=  new UsernamePasswordToken(params.get("username").toString(), params.get("password").toString());
+        subject.login(upt);
         Map<String,Object> user =  (Map<String,Object>)SecurityUtils.getSubject().getPrincipal();
         Map<String,Object> condition=new HashMap<>();
         condition.put("uid",user.get("uid"));

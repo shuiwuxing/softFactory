@@ -45,6 +45,7 @@ public class ShiroController {
         } catch (AuthenticationException e) {
             return new ResultMessage(2003, CodeInfoEnum.getPaymentType(2003).getMessage(),null);
         } catch (Exception e) {
+            System.out.print(e.getMessage());
            return  new ResultMessage(2004, CodeInfoEnum.getPaymentType(2004).getMessage(),null);
         }
     }
