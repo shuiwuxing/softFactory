@@ -33,7 +33,7 @@ const actions = {
       login({ username: username.trim(), password: md5(password) }).then(response => {
         const { data } = response
         commit('SET_NAME', data.userinfo.name)
-        commit('SET_ROLES', 'admin')
+        commit('SET_ROLES', ['admin'])
         resolve()
       }).catch(error => {
         reject(error)
