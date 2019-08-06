@@ -2,12 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>cc.mrbird</groupId>
     <artifactId>febs_shiro_jwt</artifactId>
     <version>1.0.0-release</version>
-    <packaging>jar</packaging>
-
+    <packaging>war</packaging>
     <name>febs_shiro_jwt</name>
     <description>FEBS_Shrio_JWT</description>
 
@@ -26,6 +24,12 @@
     </properties>
 
     <dependencies>
+        <!--因配置外部TOMCAT 而配置-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
