@@ -34,5 +34,6 @@ public class DateUtil {
         SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
         Date d = sdf.parse(date);
         return DateUtil.getDateFormat(d, format);
+
     }
 }

@@ -5,9 +5,11 @@ import store from '../store'
 import db from 'utils/localstorage'
 moment.locale('zh-cn')
 
+// var url = 'http://www.hatchsoft.cn/lebsAPI/'
+var url = 'http://127.0.0.1:9527'
 // 统一配置
 let FEBS_REQUEST = axios.create({
-  baseURL: 'http://www.hatchsoft.cn/lebsAdmin/',
+  baseURL: url,
   responseType: 'json',
   validateStatus (status) {
     // 200 外的状态码都认定为失败
@@ -150,7 +152,7 @@ const request = {
         })
         return result
       }],
-      responseType: 'blob'
+      responseType: 'blob'\
     }).then((r) => {
       const content = r.data
       const blob = new Blob([content])
