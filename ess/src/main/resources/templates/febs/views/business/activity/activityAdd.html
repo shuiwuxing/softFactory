@@ -1,0 +1,150 @@
+<style>
+    #user-add {
+        padding: 20px 25px 25px 0;
+    }
+    #user-add .layui-treeSelect .ztree li a, .ztree li span {
+        margin: 0 0 2px 3px !important;
+    }
+</style>
+<div class="layui-fluid" id="data-add">
+    <form class="layui-form" action="" lay-filter="data-add-form">
+        <div class="layui-tab layui-tab-card" style=" height: 500px">
+            <ul class="layui-tab-title">
+                <li class="layui-this">基本信息</li>
+                <li>活动规则</li>
+                <li>触发分享</li>
+            </ul>
+            <div class="layui-tab-content" >
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label febs-form-item-require">活动标题：</label>
+                        <div class="layui-input-block" style=" width: 70%">
+                            <input type="text" name="activityName"  lay-verify="required" autocomplete="off"
+                                   class="layui-input" >
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">总进度额度</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="totalAmount" lay-verify="money"
+                                        autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">可提现额度</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="withdrawalAmount"  lay-verify="money"
+                                        autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">红包最小额度</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="redMinMoney" lay-verify="money"
+                                        autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">红包最大额度</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="redMaxMoney"  lay-verify="money"
+                                        autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否上架：</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="status" value="1" title="上架" checked>
+                            <input type="radio" name="status" value="2" title="已下架">
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">红包概率</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="redProbability" minlength="0" maxlength="2"
+                                        lay-verify="range|number" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-tab-item">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">活动规则：</label>
+                        <div class="layui-input-block">
+                            <textarea type="text" id="activityRule" name="activityRule"  ></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-tab-item">
+                    <button type="button" id="addele" class="layui-btn layui-btn-warm" >添加</button>
+                    <div id="contentinfo" class="layui-row" style=" height: 350px; overflow: auto;">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item febs-hide">
+            <button class="layui-btn" lay-submit="" lay-filter="data-add-form-submit" id="submit"></button>
+            <button type="reset" class="layui-btn" id="reset"></button>
+        </div>
+    </form>
+</div>
+<script>
+    layui.use(['febs', 'form', 'validate','layedit'], function () {
+        var $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            layedit=layui.layedit,
+            $view = $('#data-add'),
+            validate = layui.validate,
+            tableIns;
+        form.verify(validate);
+       var editOne= layedit.build('activityRule'); //建立编辑器
+
+        form.render();
+        form.on('submit(data-add-form-submit)', function (data) {
+            data.field.couponProbability=100-data.field.redProbability;
+            data.field.activityRule=layedit.getContent(editOne);
+            data.field.moneys=getData();
+            febs.post(ctx + 'activity/add', data.field, function () {
+                layer.closeAll();
+                febs.alert.success('新增成功');
+                $('#febs-content').find('#query').click();
+            });
+            return false;
+        });
+        //动态操作页面元素
+        $view.find("#addele").click(function(){
+            var  parentEle=$view.find("#contentinfo");
+            var $ele=$(' <div class="layui-form-item">\n' +
+                '                            <div class="layui-input-inline" >\n' +
+                '                                <input type="text"   class="layui-input" >\n' +
+                '                            </div>\n' +
+                '                            <button type="button" id="deleteinfo" class="layui-btn layui-btn-warm">删除</button>\n' +
+                '                        </div>');
+            $ele.find("#deleteinfo").click(function () {
+                $(this).parent().remove();
+            })
+            parentEle.append($ele);
+        });
+        function getData(){
+            var result="";
+            $view.find("#contentinfo").find("input").each(function (index,item) {
+                if($(this).val()!=''&&!validate.money($(this).val())){
+                    result=result+$(this).val()+',';
+                }else {
+                    febs.alert.success("触发分享只能填写金额");
+                }
+
+            });
+            return result;
+        }
+    });
+</script>

@@ -1,0 +1,129 @@
+<style>
+    #user-add {
+        padding: 20px 25px 25px 0;
+    }
+    #user-add .layui-treeSelect .ztree li a, .ztree li span {
+        margin: 0 0 2px 3px !important;
+    }
+</style>
+<div class="layui-fluid" id="data-add">
+    <form class="layui-form" action="" lay-filter="data-detail-form" style=" margin-top: 10px; ">
+        <div class="layui-form-item">
+            <div class="layui-row">
+                <div class="layui-col-md6">
+                    <div class="layui-inline" >
+                        <label class="layui-form-label">出单编号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="orderNo"  class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md6">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">经办人</label>
+                        <div class="layui-input-inline">
+                            <select name="uid" class="layui-form-select">
+                                <option value="1">杨凤娟</option>
+                                <option value="2">李庆斌</option>
+                                <option value="3">杨建坡</option>
+                                <option value="4">宁丽芬</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-row">
+                <div class="layui-col-md6">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">客户手机号码</label>
+                        <div class="layui-input-inline">
+                            <input type="hidden" name="cid"  class="layui-input">
+                            <input type="text" name="phone"  class="layui-input" lay-verify="required|phone"  >
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md6">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">客户姓名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="cName"  class="layui-input" lay-verify="required" >
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-row" style="height: 400px; overflow: auto; "  >
+            <div class="layui-row">
+                <div class="layui-col-md9">
+                    <span style=" font-size: 19px; font-weight: bolder">出单明细</span>
+                </div>
+                <div class="layui-col-md3">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">总金额:</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="money"  style="width: 80px;"  class="layui-input"  >
+                        </div> 元
+                    </div>
+                </div>
+            </div>
+            <table class="layui-table" id="hot_table" >
+                <thead>
+                <tr>
+                    <td style="width: 35%">串号</td>
+                    <td style="width: 35%">商品名称</td>
+                    <td style="width: 10%">单价</td>
+                    <td style="width: 10%">数量</td>
+                </tr>
+                </thead>
+                <tbody >
+                </tbody>
+            </table>
+        </div>
+    </form>
+</div>
+<script th:inline="javascript">
+    layui.use(['febs', 'form', 'validate','layedit'], function () {
+        var $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            orderNo = [[${data.orderNo}]],
+            uid = [[${data.uid}]],
+            money = [[${data.money}]],
+            customer = [[${customer}]],
+            layedit=layui.layedit,
+            $view = $('#data-add'),
+            validate = layui.validate,
+            tableIns;
+        var list = [[${list}]];
+        form.render();
+        initdataValue();
+
+        function initdataValue() {
+            form.val("data-detail-form", {
+                "orderNo": orderNo,
+                "uid": uid,
+                "money": money,
+                "cName":customer.name,
+                "phone":customer.phone
+            });
+            initData();
+        }
+        function initData() {
+            var  parentEle=$view.find("#hot_table").find("tbody");
+            var param={"data":{"money":"0"}};
+            for (var i=0;i<list.length;i++){
+                var $ele=$(' <tr>'
+                    +'<td>'+list[i].imei+'</td>'
+                    +'<td>'+list[i].name+'</td>'
+                    +'<td>'+list[i].money+'</td>'
+                    +'<td>'+list[i].money+'</td>'
+                    +'</tr>')
+                parentEle.append($ele);
+            }
+        }
+    });
+</script>

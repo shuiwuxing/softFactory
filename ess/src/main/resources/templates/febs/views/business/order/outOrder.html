@@ -1,0 +1,173 @@
+<div class="layui-fluid layui-anim febs-anim" id="febs-content" lay-title="出库单">
+    <div class="layui-row febs-container">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body febs-table-full">
+                    <form class="layui-form layui-table-form" lay-filter="user-table-form">
+                        <div class="layui-row">
+                            <div class="layui-col-md10">
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm">单号</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="orderNo"  class="layui-input">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-md2 layui-col-sm12 layui-col-xs12 table-action-area">
+                                <div class="layui-btn layui-btn-sm layui-btn-primary table-action" id="query">
+                                    <i class="layui-icon">&#xe848;</i>
+                                </div>
+                                <div class="layui-btn layui-btn-sm layui-btn-primary table-action" id="reset">
+                                    <i class="layui-icon">&#xe79b;</i>
+                                </div>
+                                <div class="layui-btn layui-btn-sm layui-btn-primary table-action action-more"
+                                     shiro:hasAnyPermissions="outOrder:outOrderAdd">
+                                    <i class="layui-icon">&#xe875;</i>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <table lay-filter="dataTable" lay-data="{id: 'dataTable'}"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="data-option">
+    <span shiro:lacksPermission="outOrder:view,outOrder:detail">
+        <span class="layui-badge-dot febs-bg-orange"></span> 无权限
+    </span>
+    <a lay-event="detail" shiro:hasPermission="outOrder:detail"><i
+            class="layui-icon febs-edit-area febs-blue">&#xe7a4;</i></a>
+</script>
+
+
+<script type="text/html" id="uid">
+    {{#
+    var status = {
+    1: {title: '杨凤娟'},
+    2: {title: '李庆斌'},
+    3: {title: '杨建坡'},
+    4: {title: '宁丽芬'},
+    }[d.uid];
+    }}
+    <span>{{ uid==null?'':status.title }}</span>
+</script>
+
+<script data-th-inline="none" type="text/javascript">
+    layui.use(['dropdown', 'jquery', 'laydate', 'form', 'table', 'febs','treeSelect'], function () {
+        var $ = layui.jquery,
+            laydate = layui.laydate,
+            febs = layui.febs,
+            form = layui.form,
+            table = layui.table,
+            dropdown = layui.dropdown,
+            $view = $('#febs-content'),
+            $query = $view.find('#query'),
+            $reset = $view.find('#reset'),
+            $searchForm = $view.find('form'),
+            sortObject = {field: 'id', type: null},
+            tableIns;
+
+        form.render();
+
+        initTable();
+
+        laydate.render({
+            elem: '#createTime',
+            range: true,
+            trigger: 'click'
+        });
+
+        dropdown.render({
+            elem: $view.find('.action-more'),
+            click: function (name, elem, event) {
+                var checkStatus = table.checkStatus('dataTable');
+                if (name === 'add') {
+                    febs.modal.open('新增出库单', 'business/order/outOrderAdd', {
+                        btn: ['提交', '重置'],
+                        area: $(window).width() <= 750 ? '95%' : '80%',
+                        yes: function (index, layero) {
+                            $('#data-add').find('#submit').trigger('click');
+                        },
+                        btn2: function () {
+                            $('#data-add').find('#reset').trigger('click');
+                            return false;
+                        }
+                    });
+                }
+            },
+            options: [{
+                name: 'add',
+                title: '新增出库单',
+                perms: 'outOrder:outOrderAdd'
+            }]
+        });
+
+        table.on('tool(dataTable)', function (obj) {
+            var data = obj.data,
+                layEvent = obj.event;
+            if (layEvent === 'detail') {
+                febs.modal.open('出单详情', 'business/outOrder/detail/' + data.id, {
+                    area: $(window).width() <= 750 ? '90%' : '80%',
+                    btn: ['提交', '取消'],
+                    yes: function (index, layero) {
+                        $('#data-update').find('#submit').trigger('click');
+                    },
+                    btn2: function () {
+                        layer.closeAll();
+                    }
+                });
+            }
+        });
+
+        table.on('sort(dataTable)', function (obj) {
+            sortObject = obj;
+            tableIns.reload({
+                initSort: obj,
+                where: $.extend(getQueryParams(), {
+                    field: obj.field,
+                    order: obj.type
+                })
+            });
+        });
+
+        $query.on('click', function () {
+            var params = $.extend(getQueryParams(), {field: sortObject.field, order: sortObject.type});
+            tableIns.reload({where: params, page: {curr: 1}});
+        });
+
+        $reset.on('click', function () {
+            $searchForm[0].reset();
+            sortObject.type = 'null';
+            tableIns.reload({where: getQueryParams(), page: {curr: 1}, initSort: sortObject});
+        });
+
+        function initTable() {
+            tableIns = febs.table.init({
+                elem: $view.find('table'),
+                id: 'dataTable',
+                url: ctx + 'outWarehouse/list',
+                cols: [[
+                    {type: 'checkbox'},
+                    { title: '单号',field: 'orderNo'},
+                    { title: '经办人',templet: '#uid'},
+                    { title: '金额',field: 'money'},
+                    { title: '时间',field: 'createTime'},
+                    {title: '操作', toolbar: '#data-option', minWidth: 140}
+                ]]
+            });
+        }
+
+        function getQueryParams() {
+            return {
+                orderNo: $searchForm.find('input[name="orderNo"]').val().trim(),
+                invalidate_ie_cache: new Date()
+            };
+        }
+
+    })
+</script>

@@ -1,0 +1,142 @@
+<div class="layui-fluid layui-anim febs-anim" id="febs-goods-content" lay-title="商品管理">
+    <div class="layui-row febs-container">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body febs-table-full">
+                    <form class="layui-form layui-table-form" lay-filter="user-table-form">
+                        <div class="layui-row">
+                            <div class="layui-col-md8">
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm">商品名称</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="name"  class="layui-input">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-md4 layui-col-sm12 layui-col-xs12 table-action-area">
+                                <div class="layui-btn layui-btn-sm layui-btn-primary table-action" id="query">
+                                    <i class="layui-icon">&#xe848;</i>
+                                </div>
+                                <div class="layui-btn layui-btn-sm layui-btn-primary table-action" id="reset">
+                                    <i class="layui-icon">&#xe79b;</i>
+                                </div>
+                                <div class="layui-btn layui-btn-sm layui-btn-primary table-action action-more"
+                                     shiro:hasAnyPermissions="goods:goodsAdd">
+                                    <i class="layui-icon">&#xe875;</i>
+                                </div>
+                                <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" id="offirmBut">
+                                    <i class="layui-icon">&#xe600;</i></button>
+                            </div>
+                        </div>
+                    </form>
+                    <table  lay-filter="goods" lay-data="{id: 'dataTable'}"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script data-th-inline="none" type="text/javascript">
+    layui.use(['dropdown', 'jquery', 'laydate', 'form', 'table', 'febs','treeSelect'], function () {
+        var $ = layui.jquery,
+            laydate = layui.laydate,
+            febs = layui.febs,
+            form = layui.form,
+            table = layui.table,
+            dropdown = layui.dropdown,
+            $goodsview = $('#febs-goods-content'),
+            $query = $goodsview.find('#query'),
+            $reset = $goodsview.find('#reset'),
+            $searchForm = $goodsview.find('form'),
+            sortObject = {field: 'id', type: null},
+            tableIns;
+        form.render();
+        initTable();
+        laydate.render({
+            elem: '#createTime',
+            range: true,
+            trigger: 'click'
+        });
+
+        dropdown.render({
+            elem: $goodsview.find('.action-more'),
+            click: function (name, elem, event) {
+                var checkStatus = table.checkStatus('dataTable');
+                if (name === 'add') {
+                    febs.modal.open('新增商品', 'business/goods/goodsAdd', {
+                        btn: ['提交', '重置'],
+                        area: $(window).width() <= 750 ? '95%' : '80%',
+                        yes: function (index, layero) {
+                            $('#data-add').find('#submit').trigger('click');
+                        },
+                        btn2: function () {
+                            $('#data-add').find('#reset').trigger('click');
+                            return false;
+                        }
+                    });
+                }
+            },
+            options: [{
+                name: 'add',
+                title: '新增商品',
+                perms: 'goods:goodsAdd'
+            }]
+        });
+        table.on('tool(dataTable)', function (obj) {
+            var data = obj.data, layEvent = obj.event;
+        });
+        table.on('sort(dataTable)', function (obj) {
+            sortObject = obj;
+            tableIns.reload({
+                initSort: obj,
+                where: $.extend(getQueryParams(), {
+                    field: obj.field,
+                    order: obj.type
+                })
+            });
+        });
+        $query.on('click', function () {
+            var params = $.extend(getQueryParams(), {field: sortObject.field, order: sortObject.type});
+            tableIns.reload({where: params, page: {curr: 1}});
+        });
+        $reset.on('click', function () {
+            $searchForm[0].reset();
+            sortObject.type = 'null';
+            tableIns.reload({where: getQueryParams(), page: {curr: 1}, initSort: sortObject});
+        });
+
+        $goodsview.find('#offirmBut').on('click', function () {
+            var checkStatus = table.checkStatus('dataTable');
+            if (!checkStatus.data.length) {
+                febs.alert.warn('请选择勾选数据');
+            } else if(checkStatus.data.length==1){
+                febs.alert.warn(checkStatus.data[0].id);
+            }else {
+                febs.alert.warn('只能选择一条数据');
+            }
+        });
+        function initTable() {
+            tableIns = febs.table.init({
+                elem: $goodsview.find('table'),
+                id: 'dataTable',
+                url: ctx + 'goods/list',
+                cols: [[
+                    {type: 'checkbox'},
+                    { title: '名称',field: 'name'},
+                    { title: '备注',field: 'remark'}
+                ]]
+            });
+        }
+        function getQueryParams() {
+            return {
+                name: $searchForm.find('input[name="name"]').val().trim(),
+                invalidate_ie_cache: new Date()
+            };
+        }
+    })
+</script>

@@ -1,0 +1,106 @@
+<style>
+    #user-add {
+        padding: 20px 25px 25px 0;
+    }
+    #user-add .layui-treeSelect .ztree li a, .ztree li span {
+        margin: 0 0 2px 3px !important;
+    }
+</style>
+<div class="layui-fluid" id="data-add">
+    <form class="layui-form" action="" lay-filter="data-add-form">
+        <div class="layui-form-item febs-hide">
+                <input type="text" id="couponPic" name="couponPic" >
+        </div>
+        <div class="layui-form-item">
+            <button type="button" class="layui-btn" id="fileinfo">
+                <i class="layui-icon">&#xe67c;</i>上传图片
+            </button>
+            <img id="imgView" src="${data.couponPic}" width="500px" style="display: none">
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">卡券标题：</label>
+            <div class="layui-input-block" style=" width: 70%">
+                <input type="text" name="couponTitle"  lay-verify="required" autocomplete="off"
+                       class="layui-input" >
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">外部链接：</label>
+            <div class="layui-input-block">
+                <input type="text" name="couponLink" lay-verify="url" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">开始日期</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="startTime" id="startTime" lay-verify="date"
+                           placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input  datamark">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">结束日期</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="endTime" id="endTime" lay-verify="date"
+                           placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input datamark">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否上架：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="status" value="1" title="上架" checked>
+                <input type="radio" name="status" value="2" title="已下架">
+            </div>
+        </div>
+
+        <div class="layui-form-item febs-hide">
+            <button class="layui-btn" lay-submit="" lay-filter="data-add-form-submit" id="submit"></button>
+            <button type="reset" class="layui-btn" id="reset"></button>
+        </div>
+    </form>
+</div>
+<script>
+    layui.use(['febs', 'form', 'validate', 'laydate','upload'], function () {
+        var $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            upload = layui.upload,
+            laydate = layui.laydate,
+            $view = $('#data-add'),
+            validate = layui.validate;
+        form.verify(validate);
+        form.render();
+        $('.datamark').each(function(){
+            laydate.render({
+                elem: this
+                ,position: 'fixed'
+                ,format: 'yyyy-MM-dd'
+            });
+        })
+        //执行实例
+        upload.render({
+            elem: '#fileinfo' //绑定元素
+            ,url: '/upload' //上传接口
+            ,done: function(res){
+                $view.find("#imgView").show();
+                $view.find("#couponPic").val(res.url);
+                $view.find("#imgView").attr("src",res.url);
+                //上传完毕回调
+            }
+            ,error: function(){
+                //请求异常回调
+            }
+        });
+        form.on('submit(data-add-form-submit)', function (data) {
+            febs.post(ctx + 'coupon/add', data.field, function () {
+                layer.closeAll();
+                febs.alert.success('新增卡券成功');
+                $('#febs-content').find('#query').click();
+            });
+            return false;
+        });
+    });
+</script>

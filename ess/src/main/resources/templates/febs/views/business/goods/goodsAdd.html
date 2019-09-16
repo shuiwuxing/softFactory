@@ -1,0 +1,58 @@
+<style>
+    #user-add {
+        padding: 20px 25px 25px 0;
+    }
+    #user-add .layui-treeSelect .ztree li a, .ztree li span {
+        margin: 0 0 2px 3px !important;
+    }
+</style>
+<div class="layui-fluid" id="data-add">
+    <form class="layui-form" action="" lay-filter="data-add-form" style=" margin-top: 10px; ">
+        <div class="layui-form-item">
+            <div class="layui-row">
+                <div class="layui-col-md6">
+                    <div class="layui-inline" >
+                        <label class="layui-form-label">商品名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="name"  class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md6">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="remark"  class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item febs-hide">
+            <button class="layui-btn" lay-submit="" lay-filter="data-add-form-submit" id="submit"></button>
+            <button type="reset" class="layui-btn" id="reset"></button>
+        </div>
+    </form>
+</div>
+<script th:inline="javascript">
+    layui.use(['febs', 'form', 'validate'], function () {
+        var $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            $view = $('#data-add'),
+            validate = layui.validate,
+            tableIns;
+        form.verify(validate);
+        form.render();
+        form.on('submit(data-add-form-submit)', function (data) {
+            febs.post(ctx + 'goods/goodsAdd', data.field, function () {
+                layer.closeAll();
+                febs.alert.success('操作成功');
+                $('#febs-content').find('#query').click();
+            });
+            return false;
+        });
+
+    });
+</script>

@@ -1,0 +1,71 @@
+<div class="layui-fluid" id="data-update">
+    <form class="layui-form" action="" lay-filter="data-update-form">
+        <div class="layui-form-item febs-hide">
+            <label class="layui-form-label febs-form-item-require">id：</label>
+            <div class="layui-input-block">
+                <input type="text" name="id" data-th-value="${data.id}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">金额：</label>
+            <div class="layui-input-inline" style=" width: 70%">
+                <input type="text" name="money"  lay-verify="required|money" autocomplete="off"
+                       class="layui-input" data-th-id="${data.id}">
+            </div>
+            <div class="layui-form-mid layui-word-aux">元</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">炮弹数量：</label>
+            <div class="layui-input-block">
+                <input type="text" name="shellNum" lay-verify="required|number" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">赠送数量：</label>
+            <div class="layui-input-block">
+                <input type="text" name="givingNum" lay-verify="required|number" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item febs-hide">
+            <button class="layui-btn" lay-submit="" lay-filter="data-update-form-submit" id="submit"></button>
+        </div>
+
+    </form>
+</div>
+
+<script data-th-inline="javascript">
+    layui.use(['febs', 'form', 'validate'], function () {
+        var $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            data = [[${data}]],
+            $view = $('#data-update'),
+            validate = layui.validate;
+        form.verify(validate);
+        form.render();
+        initdataValue();
+        function initdataValue() {
+            form.val("data-update-form", {
+                "money": (data.money/100).toFixed(2),
+                "shellNum": data.shellNum,
+                "givingNum": data.givingNum
+            });
+        }
+        form.on('submit(data-update-form-submit)', function (info) {
+            if (febs.nativeEqual(info.field, data)) {
+                febs.alert.warn('数据未作任何修改！');
+                return false;
+            }
+            info.field.money= info.field.money*100;
+            febs.post(ctx + 'chargeConfig/update', info.field, function () {
+                layer.closeAll();
+                febs.alert.success('数据修改成功');
+                $('#febs-content').find('#query').click();
+            });
+            return false;
+        });
+    });
+</script>

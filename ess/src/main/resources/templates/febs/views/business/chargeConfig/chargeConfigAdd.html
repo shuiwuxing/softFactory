@@ -1,0 +1,60 @@
+<style>
+    #user-add {
+        padding: 20px 25px 25px 0;
+    }
+    #user-add .layui-treeSelect .ztree li a, .ztree li span {
+        margin: 0 0 2px 3px !important;
+    }
+</style>
+<div class="layui-fluid" id="data-add">
+    <form class="layui-form" action="" lay-filter="data-add-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">金额：</label>
+            <div class="layui-input-inline" style=" width: 70%">
+                <input type="text" name="money"  lay-verify="money" autocomplete="off"
+                       class="layui-input" >
+            </div>
+            <div class="layui-form-mid layui-word-aux">元</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">炮弹数量：</label>
+            <div class="layui-input-block">
+                <input type="text" name="shellNum" lay-verify="number" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">赠送数量：</label>
+            <div class="layui-input-block">
+                <input type="text" name="givingNum" lay-verify="number" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item febs-hide">
+            <button class="layui-btn" lay-submit="" lay-filter="data-add-form-submit" id="submit"></button>
+            <button type="reset" class="layui-btn" id="reset"></button>
+        </div>
+    </form>
+</div>
+
+<script>
+    layui.use(['febs', 'form', 'validate'], function () {
+        var $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            $view = $('#data-add'),
+            validate = layui.validate;
+        form.verify(validate);
+        form.render();
+        form.on('submit(data-add-form-submit)', function (data) {
+            data.field.money= data.field.money*100;
+            febs.post(ctx + 'chargeConfig/add', data.field, function () {
+                layer.closeAll();
+                febs.alert.success('新增支付配置成功');
+                $('#febs-content').find('#query').click();
+            });
+            return false;
+        });
+    });
+</script>

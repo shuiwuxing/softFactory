@@ -1,0 +1,217 @@
+<style>
+    #user-add {
+        padding: 20px 25px 25px 0;
+    }
+    #user-add .layui-treeSelect .ztree li a, .ztree li span {
+        margin: 0 0 2px 3px !important;
+    }
+</style>
+<div class="layui-fluid" id="data-add">
+    <form class="layui-form" action="" lay-filter="data-add-form" style=" margin-top: 10px; ">
+            <div class="layui-form-item">
+                   <div class="layui-row">
+                            <div class="layui-col-md6">
+                                <div class="layui-inline" >
+                                    <label class="layui-form-label">出单编号</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="orderNo" readonly="readonly" class="layui-input">
+                                    </div>
+                            </div>
+                            </div>
+                            <div class="layui-col-md6">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">经办人</label>
+                                    <div class="layui-input-inline">
+                                        <select name="uid" class="layui-form-select">
+                                            <option value="1">杨凤娟</option>
+                                            <option value="2">李庆斌</option>
+                                            <option value="3">杨建坡</option>
+                                            <option value="4">宁丽芬</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                            <div class="layui-row">
+                            <div class="layui-col-md6">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">客户手机号码</label>
+                                    <div class="layui-input-inline">
+                                        <input type="hidden" name="cid"  class="layui-input">
+                                        <input type="text" name="phone"  class="layui-input" lay-verify="required|phone"  >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-md6">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">客户姓名</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="cName"  class="layui-input" lay-verify="required" >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                   </div>
+                    <div class="layui-row" style="height: 400px; overflow: auto; "  >
+                        <div class="layui-row">
+                            <div class="layui-col-md6">
+                                <span style=" font-size: 19px; font-weight: bolder">出单明细</span>
+                            </div>
+                            <div class="layui-col-md3">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">总金额:</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="money"  style="width: 80px;"  class="layui-input" readonly="readonly" >
+                                    </div> 元
+                                </div>
+                            </div>
+                            <div class="layui-col-md3">
+                                <button type="button" id="addele" class="layui-btn layui-btn-warm" style="float: right;" >添加</button>
+                            </div>
+                        </div>
+                        <table class="layui-table" id="hot_table" >
+                            <thead>
+                            <tr>
+                                <td style="width: 35%">串号</td>
+                                <td style="width: 35%">商品名称</td>
+                                <td style="width: 10%">单价</td>
+                                <td style="width: 10%">数量</td>
+                                <td style="width: 10%">操作</td>
+                            </tr>
+                            </thead>
+                            <tbody >
+                            </tbody>
+                        </table>
+                    </div>
+        <div class="layui-form-item febs-hide">
+            <button class="layui-btn" lay-submit="" lay-filter="data-add-form-submit" id="submit"></button>
+            <button type="reset" class="layui-btn" id="reset"></button>
+        </div>
+    </form>
+</div>
+<script>
+    layui.use(['febs', 'form', 'validate','layedit'], function () {
+        var $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            layedit=layui.layedit,
+            $view = $('#data-add'),
+            validate = layui.validate,
+            tableIns;
+        form.verify(validate);
+        form.render();
+        $view.find("[name=orderNo]").val(random_No(4));
+        form.on('submit(data-add-form-submit)', function (data) {
+            data.field.details=JSON.stringify(getData());
+            febs.post(ctx + 'outWarehouse/add', data.field, function () {
+                layer.closeAll();
+                febs.alert.success('操作成功');
+                $('#febs-content').find('#query').click();
+            });
+            return false;
+        });
+        //动态操作页面元素
+        $view.find("#addele").click(function(){
+            var  parentEle=$view.find("#hot_table").find("tbody");
+            var $ele=$(' <tr>'
+                +'<td><input type="input" name="imei" class="layui-input" value=""/></td>'
+                +'<td><span name="goodsName" price="" gid=""></span></td>'
+                +'<td><input type="input" name="price" class="layui-input"/></td>'
+                +'<td><input type="input" name="num" class="layui-input" value="1" readonly="readonly"/></td>'
+                +'<td><button type="button"  class="layui-btn layui-btn-warm deleteinfo">删除</button></td>'
+                +'</tr>')
+            $ele.find(".deleteinfo").click(function () {
+                $(this).parent().parent().remove();
+                handPrice();
+            })
+            $ele.find("[name=imei]").on("input",function (e) {
+                var obj=$(this);
+                var startChar= $(this).val().substr(0,1);
+                if("a"==startChar){
+                    obj.parent().parent().find("[name=goodsName]").text("手机维修");
+                    obj.parent().parent().find("[name=goodsName]").attr("price",$(this).val().replace('a',''));
+                    obj.parent().parent().find("[name=goodsName]").attr("gid",-1);
+                    return;
+                }else if("b"==startChar ){
+                    obj.parent().parent().find("[name=goodsName]").text("手机饰品");
+                    obj.parent().parent().find("[name=goodsName]").attr("price",$(this).val().replace('b',''));
+                    obj.parent().parent().find("[name=goodsName]").attr("gid",-2);
+
+                    return;
+                }
+                febs.post(ctx + 'inWarehouseDetail/inWarehouseDetailByImei', {imei:$(this).val()}, function (data) {
+                    obj.parent().parent().find("[name=goodsName]").text(data.data.gName);
+                    obj.parent().parent().find("[name=goodsName]").attr("price",data.data.money);
+                    obj.parent().parent().find("[name=goodsName]").attr("gid",data.data.gid);
+                    handPrice();
+                });
+            })
+            $ele.find("[name=num]").on("input",function (e) {
+                handPrice();
+            })
+            $ele.find("[name=price]").on("input",function (e) {
+                handPrice();
+            })
+            var tips;
+            $ele.find("[name=goodsName]").mouseover(function() {
+                tips=layer.tips($(this).attr("price")+" 元", this, {
+                    tips: [1, "#1E90FF"]
+                });
+            });
+            $ele.find("[name=goodsName]").mouseleave(function() {
+                layer.close(tips);
+            });
+
+            parentEle.append($ele);
+            handPrice();
+        });
+        $("[name=phone]").on("input",function (e) {
+                var value= $(this).val().toString();
+                if(value.length!=11){
+                    return;
+                }
+                febs.post(ctx + 'customer/customerByPhone', {phone:$(this).val()}, function (data) {
+                    $("[name=cName]").val(data.data.name);
+                    $("[name=cid]").val(data.data.id);
+                });
+        })
+        function getData() {
+            var  parentEle=$view.find("#hot_table").find("tbody");
+            var data=[];
+
+           parentEle.find("tr").each(function(index,element) {
+               var infoData={
+                   goodsId:$(this).find("[name=goodsName]").attr("gid"),
+                   imei:$(this).find("[name=imei]").val(),
+                   price:$(this).find("[name=price]").val(),
+                   num:$(this).find("[name=num]").val()
+               }
+               data.push(infoData);
+            })
+            return data;
+        }
+        function handPrice() {
+            var  result=0;
+            $view.find("#hot_table").find("tbody").find("tr").each(function(index,element) {
+                result+=$(this).find("[name=price]").val()*$(this).find("[name=num]").val();
+            })
+            $("[name=money]").val(result);
+        }
+        function random_No(i) {
+            var nowData=new Date();
+            var outTradeNo="";  //订单号
+            for(var i=0;i<4;i++) //6位随机数，用以加在时间戳后面。
+            {
+                outTradeNo += Math.floor(Math.random()*10);
+            }
+            outTradeNo = nowData.getFullYear()+''+(nowData.getMonth()+1)+''+nowData.getDate()+''+nowData.getHours()+''+
+                nowData.getMinutes()+''+nowData.getSeconds()+''+ outTradeNo;  //时间戳，用来生成订单号。
+            return outTradeNo;
+        }
+
+    });
+</script>

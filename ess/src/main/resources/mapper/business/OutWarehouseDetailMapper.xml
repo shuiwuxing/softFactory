@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yang.ess.business.mapper.OutWarehouseDetailMapper">
+
+    <resultMap id="outWarehouseDetail" type="com.yang.ess.business.entity.OutWarehouseDetail">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="gid" jdbcType="INTEGER" property="gid"/>
+        <result column="wid" jdbcType="INTEGER" property="wid"/>
+        <result column="imei" jdbcType="VARCHAR" property="imei"/>
+        <result column="num" jdbcType="INTEGER" property="num"/>
+        <result column="money" jdbcType="INTEGER" property="money"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+    </resultMap>
+    <select id="selectOutWarehouseDetail" resultType="java.util.Map">
+        SELECT imei,money,g.NAME  FROM
+        `out_warehouse_detail` ow
+        left join  goods g on g.id=ow.gid
+        where  ow.wid=#{param.wid} and ow.type=1
+        UNION ALL
+         SELECT imei,money,'手机维修' as NAME  FROM
+        `out_warehouse_detail` ow
+        where  ow.wid=#{param.wid} and ow.type=2
+        UNION ALL
+         SELECT imei,money,'手机饰品' as NAME  FROM
+        `out_warehouse_detail` ow
+        where  ow.wid=#{param.wid} and ow.type=3
+    </select>
+</mapper>

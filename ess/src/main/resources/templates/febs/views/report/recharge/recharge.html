@@ -1,0 +1,158 @@
+<style>
+    #febs-apex-line .layui-card-header {
+        font-weight: 600;
+    }
+</style>
+<div class="layui-fluid layui-anim febs-anim" id="febs-content" lay-title="充值提现统计">
+
+    <div class="layui-row layui-col-space8 febs-container">
+        <div class="layui-row ">
+            <div class="layui-col-md10">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label layui-form-label-sm">数据条数</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="pageSize"  class="layui-input" value="3">
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">日期范围</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="conditionTime" placeholder=" - ">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md2 layui-col-sm12 layui-col-xs12 table-action-area">
+                <div class="layui-btn layui-btn-sm layui-btn-primary table-action" id="query">
+                    <i class="layui-icon">&#xe848;</i>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md12 layui-col-sm12 layui-col-xs12">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div id="rechargeCha" style="width: 100%;height: 300px;"></div>
+                    <div id="withrawalCha" style="width: 100%;height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script data-th-inline="javascript" type="text/javascript">
+    layui.use(['echarts','febs','jquery','laydate'], function () {
+        var febs = layui.febs,
+            $ = layui.jquery,
+            echarts=layui.echarts,
+            $view = $('#febs-content'),
+            $query = $view.find('#query'),
+            laydate=layui.laydate,
+            rechargeChart,
+            withrawalChart;
+        //日期范围
+        laydate.render({
+            elem: '#conditionTime'
+            ,range: true
+        });
+        // 折线图数据结构
+        // 折线图数据结构
+        var options = {
+            title: {
+                text: '用户数据分析'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: []
+            },
+            yAxis: {
+                name:"金额",
+                type: 'value'
+            },
+            series: [
+            ]
+        };
+        handData();
+        $query.on('click', handData);
+
+        function handData() {
+            febs.post(ctx + 'recharge/getData', getQueryParams(), function (data) {
+                var rows=data.data.rows;
+                handRecharge(data.data.reCharge.rows);
+                handWithrawal(data.data.withrawals.rows);
+            });
+        }
+        function getQueryParams() {
+            var times=['',''];
+            if($view.find("#conditionTime").val()!=''){
+                times= $view.find("#conditionTime").val().split(' - ');
+            }
+
+            return {
+                pageNum:1,
+                pageSize:  $view.find('input[name="pageSize"]').val().trim(),
+                startTime:times[0],
+                endTime:times[1],
+                invalidate_ie_cache: new Date()
+            };
+        }
+        function handRecharge(data) {
+            var createTime=[];
+            var money=[];
+            febs.alert.success(data.length);
+            for(var i=0;i<data.length;i++){
+                money.push(data[i].money);
+                createTime.push(data[i].createTime);
+            }
+            options.series=[{name:'日充值分析', type:'line', data:[0] }];
+            options.xAxis.data=[''];
+            if(data.length>0){
+                options.xAxis.data=createTime;
+                options.series.push({ name:'',type:'line', data:money });
+            }
+            if(rechargeChart==null){
+                rechargeChart = echarts.init(document.getElementById('rechargeCha'));
+                // 使用刚指定的配置项和数据显示图表。
+                rechargeChart.setOption(options);
+            }else{
+                rechargeChart.setOption(options,true);
+            }
+        }
+        function handWithrawal(data) {
+            var createTime=[];
+            var money=[];
+            febs.alert.success(data.length);
+            for(var i=0;i<data.length;i++){
+                money.push(data[i].money);
+                createTime.push(data[i].createTime);
+            }
+            options.series=[{name:'日提现分析', type:'line', data:[0] }];
+            options.xAxis.data=[''];
+            if(data.length>0){
+               options.xAxis.data=createTime;
+               options.series.push({name:'日提现分析', type:'line', data:money });
+            }
+            if(withrawalChart==null){
+                withrawalChart = echarts.init(document.getElementById('withrawalCha'));
+                // 使用刚指定的配置项和数据显示图表。
+                withrawalChart.setOption(options);
+            }else{
+                withrawalChart.setOption(options,true);
+            }
+        }
+    });
+</script>

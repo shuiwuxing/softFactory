@@ -1,0 +1,76 @@
+<div class="layui-fluid" id="data-update">
+    <form class="layui-form" action="" lay-filter="data-update-form">
+        <div class="layui-form-item febs-hide">
+                <input type="text" name="id" data-th-value="${data.id}">
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户昵称：</label>
+            <div class="layui-input-block">
+                <input type="text" name="nickName" class="layui-input" readonly="readonly">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">订单号：</label>
+            <div class="layui-input-block">
+                <input type="text" name="orderNo"  class="layui-input"  readonly="readonly">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">金额：</label>
+            <div class="layui-input-block">
+                <input type="text" name="money"  class="layui-input"  readonly="readonly">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">状态：</label>
+            <div class="layui-input-block">
+                <input type="text" name="status"  class="layui-input"  readonly="readonly">
+            </div>
+        </div>
+
+        <div class="layui-form-item febs-hide">
+            <button class="layui-btn" lay-submit="" lay-filter="data-update-form-submit" id="submit"></button>
+        </div>
+
+    </form>
+</div>
+
+<script data-th-inline="javascript">
+    layui.use(['febs', 'form', 'validate'], function () {
+        var $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            data = [[${data}]],
+            user = [[${user}]],
+            $view = $('#data-update'),
+            validate = layui.validate;
+        form.verify(validate);
+        form.render();
+        initdataValue();
+        function initdataValue() {
+            form.val("data-update-form", {
+                "money": (data.money/100).toFixed(2),
+                "orderNo": data.orderNo,
+                "createTime": data.createTime,
+                "nickName": user.nickName,
+                "status": data.status==1?'待处理':'已处理'
+            });
+            $view.find("#id").val(data.id);
+        }
+        form.on('submit(data-update-form-submit)', function (info) {
+            info.field.status=info.field.status=='待处理'?1:2
+            info.field.money= info.field.money*100;
+            febs.post(ctx + 'withdrawalRecord/update', info.field, function () {
+                layer.closeAll();
+                febs.alert.success('数据修改成功');
+                $('#febs-content').find('#query').click();
+            });
+            return false;
+        });
+    });
+</script>

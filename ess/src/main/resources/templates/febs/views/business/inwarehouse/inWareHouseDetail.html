@@ -1,0 +1,64 @@
+<div class="layui-fluid" id="data-update">
+    <form class="layui-form" action="" lay-filter="data-update-form">
+        <div class="layui-form-item febs-hide">
+            <label class="layui-form-label febs-form-item-require">id：</label>
+            <div class="layui-input-block">
+                <input type="text" name="id" data-th-value="${data.id}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">名称：</label>
+            <div class="layui-input-block">
+                <input type="text" name="name"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">imei：</label>
+            <div class="layui-input-block">
+                <input type="text" name="imei" readonly="readonly" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">地址：</label>
+            <div class="layui-input-block">
+                <input type="text" name="address" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item febs-hide">
+            <button class="layui-btn" lay-submit="" lay-filter="data-update-form-submit" id="submit"></button>
+        </div>
+
+    </form>
+</div>
+
+<script data-th-inline="javascript">
+    layui.use(['febs', 'form', 'validate'], function () {
+        var $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            data = [[${data}]],
+            goods = [[${goods}]],
+            $view = $('#data-update'),
+            validate = layui.validate;
+        form.verify(validate);
+        form.render();
+        initdataValue();
+        function initdataValue() {
+            form.val("data-update-form", {
+                "name": goods.name,
+                "imei": data.imei,
+                "address": data.address
+            });
+        }
+        form.on('submit(data-update-form-submit)', function (info) {
+            febs.post(ctx + 'inWarehouseDetail/update', info.field, function () {
+                layer.closeAll();
+                febs.alert.success('数据修改成功');
+                $('#febs-content').find('#query').click();
+            });
+            return false;
+        });
+    });
+</script>

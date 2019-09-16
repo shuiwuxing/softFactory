@@ -1,0 +1,172 @@
+<style>
+    #febs-apex-line .layui-card-header {
+        font-weight: 600;
+    }
+</style>
+<div class="layui-fluid layui-anim febs-anim" id="febs-content" lay-title="线性图表">
+    <div class="layui-row layui-col-space8 febs-container">
+        <div class="layui-row ">
+            <div class="layui-col-md10">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label layui-form-label-sm">数据条数</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="pageSize"  class="layui-input" value="3">
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">日期范围</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="conditionTime" placeholder=" - ">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md2 layui-col-sm12 layui-col-xs12 table-action-area">
+                <div class="layui-btn layui-btn-sm layui-btn-primary table-action" id="query">
+                    <i class="layui-icon">&#xe848;</i>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md12 layui-col-sm12 layui-col-xs12">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div id="lineChartDatalabels" style="width: 100%;height: 450px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script data-th-inline="javascript" type="text/javascript">
+    layui.use(['echarts', 'febs','jquery'], function () {
+        var febs = layui.febs,
+            $ = layui.jquery,
+            echarts=layui.echarts,
+            $view = $('#febs-content'),
+            $query = $view.find('#query'),
+            myChart;
+        // 折线图数据结构
+        var options = {
+            title: {
+                text: '用户数据分析'
+            },
+            legend: {
+                data:['注册用户','活跃用户','付费用户','订单','付费金额','次日留存','三日留存','四日留存','五日留存','六日留存','七日留存'],
+                selected: {
+                    '注册用户': true,
+                    '活跃用户': true,
+                    '付费用户': true,
+                    '订单': false,
+                    '付费金额': false,
+                    '次日留存': false,
+                    '三日留存': false,
+                    '四日留存': false,
+                    '五日留存': false,
+                    '六日留存': false,
+                    '七日留存': false
+                }
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: []
+            },
+            yAxis: [{
+                name:"个数",
+                type: 'value'
+            },{
+                name:"百分比",
+                type: 'value'
+            }],
+            series: [
+                {
+                    name:'邮件营销',
+                    type:'line',
+                    stack: '总量',
+                    data:[120, 132, 101, 134, 90, 230, 210]
+                }
+            ]
+        };
+
+
+
+        handData();
+        $query.on('click', handData);
+
+        function handData() {
+            febs.post(ctx + 'reportUser/list', getQueryParams(), function (data) {
+                var rows=data.data.rows;
+                var registNum=[];
+                var activityUser=[];
+                var keepStayTwo=[];
+                var keepStayThree=[];
+                var keepStayFour=[];
+                var keepStayFive=[];
+                var keepStaySix=[];
+                var keepStaySeven=[];
+                var payPopulation=[];
+                var orderCount=[];
+                var payNumber=[];
+                var settleDate=[];
+                for(var i=0;i<rows.length;i++){
+                    registNum.push(rows[i].registNum);
+                    activityUser.push(rows[i].activityUser);
+                    keepStayTwo.push(rows[i].keepStayTwo);
+                    keepStayThree.push(rows[i].keepStayThree);
+                    keepStayFour.push(rows[i].keepStayFour);
+                    keepStayFive.push(rows[i].keepStayFive);
+                    keepStaySix.push(rows[i].keepStaySix);
+                    keepStaySeven.push(rows[i].keepStaySeven);
+                    payPopulation.push(rows[i].payPopulation);
+                    orderCount.push(rows[i].orderCount);
+                    payNumber.push(rows[i].payNumber);
+                    settleDate.push(rows[i].settleDate);
+                }
+                options.series=[{ name:'注册用户',type:'line', data:[0],yAxisIndex:0 }];
+                options.xAxis.data=[''];
+                if(rows.length>0){
+                    options.xAxis.data=settleDate;
+                    options.series.push({ name:'注册用户',type:'line', data:registNum,yAxisIndex:0 });
+                    options.series.push({ name:'活跃用户',type:'line', data:activityUser,yAxisIndex:0 });
+                    options.series.push({name: '付费用户', type: 'line',data: payPopulation,yAxisIndex:0});
+                    options.series.push({name: '订单', type: 'line',data: orderCount,yAxisIndex:0});
+                    options.series.push({name: '付费金额', type: 'line',data: payNumber,yAxisIndex:0});
+                    options.series.push({name: '次日留存', type: 'line',data: keepStayTwo,yAxisIndex:1});
+                    options.series.push({name: '三日留存', type: 'line',data: keepStayThree,yAxisIndex:1});
+                    options.series.push({name: '四日留存', type: 'line',data: keepStayFour,yAxisIndex:1});
+                    options.series.push({name: '五日留存', type: 'line',data: keepStayFive,yAxisIndex:1});
+                    options.series.push({name: '六日留存', type: 'line',data: keepStaySix,yAxisIndex:1});
+                    options.series.push({name: '七日留存', type: 'line',data: keepStaySeven,yAxisIndex:1});
+                }
+                if(myChart==null){
+                     myChart = echarts.init(document.getElementById('lineChartDatalabels'));
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(options);
+                }else{
+                    myChart.setOption(options,true);
+                }
+            });
+        }
+        function getQueryParams() {
+            return {
+                pageNum:1,
+                pageSize:  $view.find('input[name="pageSize"]').val().trim(),
+                invalidate_ie_cache: new Date()
+            };
+        }
+    });
+</script>
