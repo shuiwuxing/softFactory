@@ -2,10 +2,12 @@ package com.yang.ess.business.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.yang.ess.business.entity.Customer;
+import com.yang.ess.business.entity.InWarehouseDetail;
 import com.yang.ess.business.entity.OutWarehouse;
 import com.yang.ess.business.entity.OutWarehouseDetail;
 import com.yang.ess.business.mapper.OutWarehouseMapper;
 import com.yang.ess.business.service.ICustomerService;
+import com.yang.ess.business.service.IInWarehouseDetailService;
 import com.yang.ess.business.service.IOutWarehouseDetailService;
 import com.yang.ess.business.service.IOutWarehouseService;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,8 @@ public class OutWarehouseServiceImpl extends ServiceImpl<OutWarehouseMapper, Out
     private OutWarehouseMapper outWarehouseMapper;
     @Autowired
     private IOutWarehouseDetailService IOutWarehouseDetailService;
+    @Autowired
+    private IInWarehouseDetailService inWarehouseDetailService;
     @Autowired
     private ICustomerService customerService;
 
@@ -73,6 +77,7 @@ public class OutWarehouseServiceImpl extends ServiceImpl<OutWarehouseMapper, Out
         this.save(outWarehouse);
         JSONObject jsonObject=new JSONObject();
         List<Map> details=JSON.parseArray(detail, Map.class);
+        InWarehouseDetail condition=new InWarehouseDetail();
         for (int i=0;i<details.size();i++){
             OutWarehouseDetail outWarehouseDetail =new OutWarehouseDetail();
             outWarehouseDetail.setWid(outWarehouse.getId());
@@ -89,6 +94,10 @@ public class OutWarehouseServiceImpl extends ServiceImpl<OutWarehouseMapper, Out
             outWarehouseDetail.setMoney(Integer.parseInt(details.get(i).get("price").toString()));
             outWarehouseDetail.setNum(Integer.parseInt(details.get(i).get("num").toString()));
             outWarehouseDetail.setStatus(1);
+            condition.setImei(details.get(i).get("imei").toString());
+            InWarehouseDetail inWarehouseDetail=inWarehouseDetailService.findInWarehouseDetails(condition).get(0);
+            inWarehouseDetail.setStatus(2);
+            inWarehouseDetailService.updateInWarehouseDetail(inWarehouseDetail);
             IOutWarehouseDetailService.save(outWarehouseDetail);
         }
     }
