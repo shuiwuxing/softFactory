@@ -42,7 +42,8 @@
                     <div class="layui-inline">
                         <label class="layui-form-label">总金额:</label>
                         <div class="layui-input-inline">
-                            <input type="text" name="money"  style="width: 80px;"  class="layui-input" readonly="readonly" >
+                            <input type="text" name="money"
+                                   style="width: 80px;"  class="layui-input" readonly="readonly" marke="" >
                         </div> 元
                     </div>
                 </div>
@@ -94,6 +95,10 @@
         //动态操作页面元素
         $view.find("#addele").click(function(){
             var  parentEle=$view.find("#hot_table").find("tbody");
+           if(parentEle.find("tr:last").find("[name=imei]").val()==''){
+               febs.alert.success('请完善最后一条明细');
+               return;
+           }
             var $ele=$(' <tr>'
                 +'<td><input type="input" name="imei" class="layui-input" value=""/></td>'
                 +'<td><span name="goodsName" gid=""></span></td>'
@@ -121,9 +126,15 @@
                 if($(this).val().length<5){
                     return;
                 }
-               febs.modal.open('选择商品', 'business/goods/goods', {
-                    area: $(window).width() <= 750 ? '95%' : '80%'
-                });
+                if($view.find("[name=money]").attr("marke")==''){
+                   febs.modal.open('选择商品', 'business/goods/goods', {
+                        area: $(window).width() <= 750 ? '95%' : '80%',
+                       end: function () {//无论是确认还是取消，只要层被销毁了，end都会执行，不携带任何参数。layer.open关闭事件
+                           $view.find("[name=money]").attr("marke","");
+                       }
+                    });
+                    $view.find("[name=money]").attr("marke","1");
+                }
             })
             $ele.find("[name=num]").on("input",function (e) {
                 handPrice();
