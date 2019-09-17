@@ -53,6 +53,7 @@
             $query = $goodsview.find('#query'),
             $reset = $goodsview.find('#reset'),
             $searchForm = $goodsview.find('form'),
+            $parnet=$("#data-add"),
             sortObject = {field: 'id', type: null},
             tableIns;
         form.render();
@@ -115,7 +116,9 @@
             if (!checkStatus.data.length) {
                 febs.alert.warn('请选择勾选数据');
             } else if(checkStatus.data.length==1){
-                febs.alert.warn(checkStatus.data[0].id);
+                $parnet.find("#hot_table").find("tr:last").find("[name=goodsName]").text(checkStatus.data[0].name)
+                    .attr("id",checkStatus.data[0].id);
+                $parnet.find("[name=money]").trigger("click");
             }else {
                 febs.alert.warn('只能选择一条数据');
             }
