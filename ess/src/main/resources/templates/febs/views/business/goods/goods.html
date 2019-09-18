@@ -1,4 +1,4 @@
-<div class="layui-fluid layui-anim febs-anim" id="febs-goods-content" lay-title="商品管理">
+<div class="layui-fluid layui-anim febs-anim" id="goods-content" lay-title="商品管理">
     <div class="layui-row febs-container">
         <div class="layui-col-md12">
             <div class="layui-card">
@@ -22,8 +22,7 @@
                                 <div class="layui-btn layui-btn-sm layui-btn-primary table-action" id="reset">
                                     <i class="layui-icon">&#xe79b;</i>
                                 </div>
-                                <div class="layui-btn layui-btn-sm layui-btn-primary table-action action-more"
-                                     shiro:hasAnyPermissions="goods:goodsAdd">
+                                <div class="layui-btn layui-btn-sm layui-btn-primary table-action action-more" id="addgoods">
                                     <i class="layui-icon">&#xe875;</i>
                                 </div>
                                 <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" id="offirmBut">
@@ -42,45 +41,21 @@
 
 
 <script data-th-inline="none" type="text/javascript">
-    layui.use(['dropdown', 'jquery', 'laydate', 'form', 'table', 'febs','treeSelect'], function () {
+    layui.use(['jquery', 'laydate', 'form', 'table', 'febs','treeSelect'], function () {
         var $ = layui.jquery,
             febs = layui.febs,
             form = layui.form,
             table = layui.table,
-            dropdown = layui.dropdown,
-            $goodsview = $('#febs-goods-content'),
+            $goodsview = $('#goods-content'),
             $query = $goodsview.find('#query'),
             $reset = $goodsview.find('#reset'),
+            $addgoods = $goodsview.find('#addgoods'),
             $searchForm = $goodsview.find('form'),
             $parnet=$("#data-add"),
             sortObject = {field: 'id', type: null},
             tableIns;
         form.render();
         initTable();
-        dropdown.render({
-            elem: $goodsview.find('.action-more'),
-            click: function (name, elem, event) {
-                var checkStatus = table.checkStatus('dataGoodsTable');
-                if (name === 'add') {
-                    febs.modal.open('新增商品', 'business/goods/goodsAdd', {
-                        btn: ['提交', '重置'],
-                        area: $(window).width() <= 750 ? '95%' : '80%',
-                        yes: function (index, layero) {
-                            $('#data-add').find('#submit').trigger('click');
-                        },
-                        btn2: function () {
-                            $('#data-add').find('#reset').trigger('click');
-                            return false;
-                        }
-                    });
-                }
-            },
-            options: [{
-                name: 'add',
-                title: '新增商品',
-                perms: 'goods:goodsAdd'
-            }]
-        });
         table.on('tool(dataGoodsTable)', function (obj) {
             var data = obj.data, layEvent = obj.event;
         });
@@ -92,6 +67,19 @@
                     field: obj.field,
                     order: obj.type
                 })
+            });
+        });
+        $addgoods.on('click', function () {
+            febs.modal.open('新增商品', 'business/goods/goodsAdd', {
+                btn: ['提交', '重置'],
+                area: $(window).width() <= 750 ? '95%' : '80%',
+                yes: function (index, layero) {
+                    $('#goods-add').find('#submit').trigger('click');
+                },
+                btn2: function () {
+                    $('#goods-add').find('#reset').trigger('click');
+                    return false;
+                }
             });
         });
         $query.on('click', function () {

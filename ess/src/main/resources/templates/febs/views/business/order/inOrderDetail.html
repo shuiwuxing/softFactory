@@ -90,7 +90,6 @@
 
 
         <div class="layui-form-item febs-hide">
-            <button class="layui-btn" lay-submit="" lay-filter="data-add-form-submit" id="submit"></button>
             <button type="reset" class="layui-btn" id="reset"></button>
         </div>
     </form>
@@ -134,17 +133,5 @@
             })
             parentEle.append($ele);
         });
-        function getData(){
-            var result="";
-            $view.find("#contentinfo").find("input").each(function (index,item) {
-                if($(this).val()!=''&&!validate.money($(this).val())){
-                    result=result+$(this).val()+',';
-                }else {
-                    febs.alert.success("触发分享只能填写金额");
-                }
-
-            });
-            return result;
-        }
     });
 </script>

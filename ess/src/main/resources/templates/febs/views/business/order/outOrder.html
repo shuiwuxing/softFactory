@@ -113,10 +113,7 @@
             if (layEvent === 'detail') {
                 febs.modal.open('出单详情', 'business/outOrder/detail/' + data.id, {
                     area: $(window).width() <= 750 ? '90%' : '80%',
-                    btn: ['提交', '取消'],
-                    yes: function (index, layero) {
-                        $('#data-update').find('#submit').trigger('click');
-                    },
+                    btn: ['取消'],
                     btn2: function () {
                         layer.closeAll();
                     }
