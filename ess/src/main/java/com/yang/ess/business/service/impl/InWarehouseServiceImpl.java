@@ -3,7 +3,6 @@ package com.yang.ess.business.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.yang.ess.business.entity.InWarehouse;
 import com.yang.ess.business.entity.InWarehouseDetail;
-import com.yang.ess.business.entity.OutWarehouseDetail;
 import com.yang.ess.business.mapper.InWarehouseMapper;
 import com.yang.ess.business.service.IInWarehouseDetailService;
 import com.yang.ess.business.service.IInWarehouseService;
@@ -44,6 +43,7 @@ public class InWarehouseServiceImpl extends ServiceImpl<InWarehouseMapper, InWar
         if(inWarehouse.getOrderNo()!=null){
             queryWrapper.like(InWarehouse::getOrderNo,inWarehouse.getOrderNo());
         }
+        queryWrapper.orderByDesc(InWarehouse::getId);
         Page<InWarehouse> page = new Page<>(request.getPageNum(), request.getPageSize());
         return this.page(page, queryWrapper);
     }

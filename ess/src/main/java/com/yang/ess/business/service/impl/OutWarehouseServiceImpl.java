@@ -1,10 +1,7 @@
 package com.yang.ess.business.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.yang.ess.business.entity.Customer;
-import com.yang.ess.business.entity.InWarehouseDetail;
-import com.yang.ess.business.entity.OutWarehouse;
-import com.yang.ess.business.entity.OutWarehouseDetail;
+import com.yang.ess.business.entity.*;
 import com.yang.ess.business.mapper.OutWarehouseMapper;
 import com.yang.ess.business.service.ICustomerService;
 import com.yang.ess.business.service.IInWarehouseDetailService;
@@ -49,6 +46,7 @@ public class OutWarehouseServiceImpl extends ServiceImpl<OutWarehouseMapper, Out
         if(outWarehouse.getOrderNo()!=null){
             queryWrapper.like(OutWarehouse::getOrderNo,outWarehouse.getOrderNo());
         }
+        queryWrapper.orderByDesc(OutWarehouse::getId);
         Page<OutWarehouse> page = new Page<>(request.getPageNum(), request.getPageSize());
         return this.page(page, queryWrapper);
     }

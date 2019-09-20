@@ -108,6 +108,7 @@
             tableIns = febs.table.init({
                 elem: $goodsview.find('table'),
                 id: 'dataGoodsTable',
+                limit:5,
                 url: ctx + 'goods/list',
                 cols: [[
                     {type: 'checkbox'},

@@ -33,6 +33,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         if(goods.getName()!=null){
             queryWrapper.like(Goods::getName,goods.getName());
         }
+        queryWrapper.orderByDesc(Goods::getId);
         Page<Goods> page = new Page<>(request.getPageNum(), request.getPageSize());
         return this.page(page, queryWrapper);
     }

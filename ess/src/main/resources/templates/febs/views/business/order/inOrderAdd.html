@@ -127,8 +127,10 @@
                     return;
                 }
                 if($view.find("[name=money]").attr("marke")==''){
+                    $("#goods-content").remove();
+                    $(".febs-tabs-menu").find("[lay-url='/business/goods/goods']").remove();
                    febs.modal.open('选择商品', 'business/goods/goods', {
-                        area: ['800px', '340px'],
+                        area: ['900px', '500px'],
                        end: function () {//无论是确认还是取消，只要层被销毁了，end都会执行，不携带任何参数。layer.open关闭事件
                            $view.find("[name=money]").attr("marke","");
                        }
