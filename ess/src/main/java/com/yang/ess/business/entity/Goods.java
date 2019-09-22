@@ -29,6 +29,21 @@ public class Goods {
      */
     @TableField("name")
     private String name;
+    /**
+     * 品牌
+     */
+    @TableField("brand")
+    private String brand;
+    /**
+     * 型号
+     */
+    @TableField("model")
+    private String model;
+    /**
+     * 颜色
+     */
+    @TableField("color")
+    private String color;
 
     /**
      * 商品类型

@@ -95,7 +95,7 @@ public class OutWarehouseServiceImpl extends ServiceImpl<OutWarehouseMapper, Out
             condition.setImei(details.get(i).get("imei").toString());
             InWarehouseDetail inWarehouseDetail=inWarehouseDetailService.findInWarehouseDetails(condition).get(0);
             inWarehouseDetail.setStatus(2);
-            inWarehouseDetailService.updateInWarehouseDetail(inWarehouseDetail);
+            inWarehouseDetailService.saveOrUpdate(inWarehouseDetail);
             IOutWarehouseDetailService.save(outWarehouseDetail);
         }
     }

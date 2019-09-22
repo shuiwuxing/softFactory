@@ -43,6 +43,10 @@ public class InWarehouseDetailServiceImpl extends ServiceImpl<InWarehouseDetailM
     public IPage<Map<String,Object>> findInWarehouseDetailsIn(QueryRequest request, InWarehouseDetail inWarehouseDetail) {
        Map<String,Object> condition=new HashMap<>();
        condition.put("name",inWarehouseDetail.getAddress());
+       if(inWarehouseDetail.getStatus()==null){
+           inWarehouseDetail.setStatus(1);
+       }
+       condition.put("status",inWarehouseDetail.getStatus());
         // TODO 设置查询条件
         Page<InWarehouseDetail> page = new Page<>(request.getPageNum(), request.getPageSize());
         return inWarehouseDetailMapper.findInWareHouse(page,condition);
@@ -55,7 +59,17 @@ public class InWarehouseDetailServiceImpl extends ServiceImpl<InWarehouseDetailM
         if(inWarehouseDetail.getImei()!=null){
             queryWrapper.eq(InWarehouseDetail::getImei,inWarehouseDetail.getImei());
         }
+        if(inWarehouseDetail.getStatus()!=null){
+            queryWrapper.eq(InWarehouseDetail::getStatus,inWarehouseDetail.getStatus());
+        }
 		return this.baseMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public List<Map<String, Object>> selectInWarehouseDetail(String wid) {
+        Map<String,Object> condition=new HashMap<>();
+        condition.put("wid",wid);
+        return inWarehouseDetailMapper.selectInWarehouseDetail(condition);
     }
 
     @Override

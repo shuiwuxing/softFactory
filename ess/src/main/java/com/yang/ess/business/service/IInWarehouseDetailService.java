@@ -43,6 +43,14 @@ public interface IInWarehouseDetailService extends IService<InWarehouseDetail> {
     List<InWarehouseDetail> findInWarehouseDetails(InWarehouseDetail inWarehouseDetail);
 
     /**
+     * 查询
+     *
+     * @param   wid  String
+     * @return List<OutWarehouseDetail>
+     */
+    List<Map<String,Object>> selectInWarehouseDetail(String wid);
+
+    /**
      * 新增
      *
      * @param inWarehouseDetail inWarehouseDetail

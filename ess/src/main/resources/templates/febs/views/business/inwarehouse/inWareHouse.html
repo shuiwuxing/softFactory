@@ -10,7 +10,16 @@
                                     <div class="layui-inline">
                                         <label class="layui-form-label layui-form-label-sm">名称</label>
                                         <div class="layui-input-inline">
-                                            <input type="text" name="address"  class="layui-input">
+                                            <input type="text" name="name"  class="layui-input">
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm">是否售卖</label>
+                                        <div class="layui-input-inline">
+                                            <select name="status" class="layui-form-select">
+                                                <option value="1">未售卖</option>
+                                                <option value="2">已售卖</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -111,7 +120,8 @@
 
         function getQueryParams() {
             return {
-                address: $searchForm.find('input[name="address"]').val().trim(),
+                address: $searchForm.find('input[name="name"]').val().trim(),
+                status: $searchForm.find('[name="status"]').val(),
                 invalidate_ie_cache: new Date()
             };
         }

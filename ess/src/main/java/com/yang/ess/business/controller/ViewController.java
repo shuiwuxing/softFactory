@@ -25,6 +25,8 @@ public class ViewController {
     @Autowired
     IOutWarehouseService outWarehouseService;
     @Autowired
+    IInWarehouseService inWarehouseService;
+    @Autowired
     IOutWarehouseDetailService outWarehouseDetailService;
     @Autowired
     IInWarehouseDetailService inWarehouseDetailService;
@@ -45,14 +47,14 @@ public class ViewController {
         return FebsUtil.view("business/order/inOrderAdd");
     }
 
-    @GetMapping(FebsConstant.VIEW_PREFIX + "business/activity/update/{id}")
+    @GetMapping(FebsConstant.VIEW_PREFIX + "business/inOrder/detail/{id}")
     @RequiresPermissions("inOrder:detail")
-    public String activityUpdate(@PathVariable Integer id, Model model) {
-        OutWarehouse outWarehouse = outWarehouseService.getById(id);
-        List<Map<String,Object>> list= outWarehouseDetailService.selectOutWarehouseDetail(id.toString());
-        model.addAttribute("data", outWarehouse);
+    public String inWareHouseDetailDetail (@PathVariable Integer id, Model model) {
+        InWarehouse inWarehouse = inWarehouseService.getById(id);
+        List<Map<String,Object>> list= inWarehouseDetailService.selectInWarehouseDetail(id.toString());
+        model.addAttribute("data", inWarehouse);
         model.addAttribute("list", list);
-        return FebsUtil.view("business/activity/activityUpdate");
+        return FebsUtil.view("business/order/inOrderDetail");
     }
 
     //出库单
@@ -75,7 +77,7 @@ public class ViewController {
         List<Map<String,Object>> list= outWarehouseDetailService.selectOutWarehouseDetail(id.toString());
         Customer customer= customerService.getById(outWarehouse.getCid());
         model.addAttribute("data", outWarehouse);
-        model.addAttribute("customer", customer);
+        model.addAttribute("customer", customer==null?new Customer():customer);
         model.addAttribute("list", list);
         return FebsUtil.view("business/order/outOrderDetail");
     }
@@ -96,7 +98,7 @@ public class ViewController {
     @GetMapping(FebsConstant.VIEW_PREFIX + "business/inWareHouse/inWareHouse")
     @RequiresPermissions("inWareHouse:view")
     public String inWareHouse() {
-        return FebsUtil.view("business/inWareHouse/inWareHouse");
+        return FebsUtil.view("business/inwarehouse/inWareHouse");
     }
     @GetMapping(FebsConstant.VIEW_PREFIX + "business/inWareHouse/inWareHouseDetail/{id}")
     @RequiresPermissions("inWareHouse:inWareHuseDetail")
@@ -105,7 +107,7 @@ public class ViewController {
          Goods goods=goodsService.getById(inWarehouseDetail.getGid());
          model.addAttribute("data", inWarehouseDetail);
          model.addAttribute("goods", goods);
-        return FebsUtil.view("business/inWareHouse/inWareHouseDetail");
+        return FebsUtil.view("business/inwarehouse/inWareHouseDetail");
     }
 
 

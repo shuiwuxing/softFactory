@@ -60,6 +60,7 @@ public class InWarehouseDetailController extends BaseController {
     @ResponseBody
     @RequiresAuthentication
     public FebsResponse getInWarehouseDetailByImei(InWarehouseDetail inWarehouseDetail) {
+        inWarehouseDetail.setStatus(1);
         List<InWarehouseDetail> list= inWarehouseDetailService.findInWarehouseDetails(inWarehouseDetail);
         Map<String,String> result=new HashMap<>();
         if(list.size()>0){
@@ -70,6 +71,7 @@ public class InWarehouseDetailController extends BaseController {
         }else {
             result.put("money","");
             result.put("gName","");
+            result.put("gid","");
         }
         return new FebsResponse().success().data(result);
     }

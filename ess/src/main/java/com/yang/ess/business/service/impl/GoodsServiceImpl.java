@@ -48,6 +48,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Override
     @Transactional
     public void createGoods(Goods goods) {
+        goods.setName(goods.getBrand()+goods.getModel()+goods.getColor()+goods.getRemark());
         this.save(goods);
     }
 

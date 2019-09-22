@@ -6,6 +6,7 @@ import com.yang.ess.business.entity.InWarehouseDetail;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,5 +18,7 @@ import java.util.Map;
 public interface InWarehouseDetailMapper extends BaseMapper<InWarehouseDetail> {
 
     IPage<Map<String,Object>> findInWareHouse(Page page, @Param("param") Map<String,Object> param);
+
+    List<Map<String,Object>> selectInWarehouseDetail(@Param("param") Map<String,Object> param);
 
 }

@@ -43,6 +43,9 @@ public class InWarehouseServiceImpl extends ServiceImpl<InWarehouseMapper, InWar
         if(inWarehouse.getOrderNo()!=null){
             queryWrapper.like(InWarehouse::getOrderNo,inWarehouse.getOrderNo());
         }
+        if(inWarehouse.getStatus()!=null){
+            queryWrapper.like(InWarehouse::getStatus,inWarehouse.getStatus());
+        }
         queryWrapper.orderByDesc(InWarehouse::getId);
         Page<InWarehouse> page = new Page<>(request.getPageNum(), request.getPageSize());
         return this.page(page, queryWrapper);

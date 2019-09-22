@@ -41,7 +41,7 @@
                                     <label class="layui-form-label">客户手机号码</label>
                                     <div class="layui-input-inline">
                                         <input type="hidden" name="cid"  class="layui-input">
-                                        <input type="text" name="phone"  class="layui-input" lay-verify="required|phone"  >
+                                        <input type="text" name="phone"  class="layui-input" lay-verify="required|phone" autocomplete="off"  >
                                     </div>
                                 </div>
                             </div>
@@ -101,12 +101,16 @@
             layedit=layui.layedit,
             $view = $('#data-add'),
             validate = layui.validate,
+            submitStatus=0,
             tableIns;
         form.verify(validate);
         form.render();
         $view.find("[name=orderNo]").val(random_No(4));
         form.on('submit(data-add-form-submit)', function (data) {
             data.field.details=JSON.stringify(getData());
+            if(submitStatus==1){
+                return false ;
+            }
             febs.post(ctx + 'outWarehouse/add', data.field, function () {
                 layer.closeAll();
                 febs.alert.success('操作成功');
@@ -118,10 +122,10 @@
         $view.find("#addele").click(function(){
             var  parentEle=$view.find("#hot_table").find("tbody");
             var $ele=$(' <tr>'
-                +'<td><input type="input" name="imei" class="layui-input" value=""/></td>'
+                +'<td><input type="input" name="imei" class="layui-input" value="" autocomplete="off"/></td>'
                 +'<td><span name="goodsName" price="" gid=""></span></td>'
-                +'<td><input type="input" name="price" class="layui-input"/></td>'
-                +'<td><input type="input" name="num" class="layui-input" value="1" readonly="readonly"/></td>'
+                +'<td><input type="input" name="price" class="layui-input" autocomplete="off"/></td>'
+                +'<td><input type="input" name="num" class="layui-input" value="1" readonly="readonly" autocomplete="off"/></td>'
                 +'<td><button type="button"  class="layui-btn layui-btn-warm deleteinfo">删除</button></td>'
                 +'</tr>')
             $ele.find(".deleteinfo").click(function () {
@@ -140,15 +144,17 @@
                     obj.parent().parent().find("[name=goodsName]").text("手机饰品");
                     obj.parent().parent().find("[name=goodsName]").attr("price",$(this).val().replace('b',''));
                     obj.parent().parent().find("[name=goodsName]").attr("gid",-2);
-
                     return;
                 }
-                febs.post(ctx + 'inWarehouseDetail/inWarehouseDetailByImei', {imei:$(this).val()}, function (data) {
-                    obj.parent().parent().find("[name=goodsName]").text(data.data.gName);
-                    obj.parent().parent().find("[name=goodsName]").attr("price",data.data.money);
-                    obj.parent().parent().find("[name=goodsName]").attr("gid",data.data.gid);
-                    handPrice();
-                });
+                if($(this).val().toString().length==15){
+                    febs.post(ctx + 'inWarehouseDetail/inWarehouseDetailByImei', {imei:$(this).val()}, function (data) {
+                        obj.parent().parent().find("[name=goodsName]").text(data.data.gName);
+                        obj.parent().parent().find("[name=goodsName]").attr("price",data.data.money);
+                        obj.parent().parent().find("[name=goodsName]").attr("gid",data.data.gid);
+                        handPrice();
+                    });
+                }
+
             })
             $ele.find("[name=num]").on("input",function (e) {
                 handPrice();
@@ -182,13 +188,22 @@
         function getData() {
             var  parentEle=$view.find("#hot_table").find("tbody");
             var data=[];
-
+            var imeis='';
            parentEle.find("tr").each(function(index,element) {
+               if($(this).find("[name=goodsName]").attr("gid")==''||$(this).find("[name=goodsName]").attr("gid")==undefined){
+                   imeis+=$(this).find("[name=imei]").val();
+               }
                var infoData={
                    goodsId:$(this).find("[name=goodsName]").attr("gid"),
                    imei:$(this).find("[name=imei]").val(),
                    price:$(this).find("[name=price]").val(),
                    num:$(this).find("[name=num]").val()
+               }
+               if(imeis!=''){
+                   submitStatus=1;
+                   febs.alert.success("串号："+imeis+"-未入库");
+               }else {
+                   submitStatus=0;
                }
                data.push(infoData);
             })
@@ -212,6 +227,5 @@
                 nowData.getMinutes()+''+nowData.getSeconds()+''+ outTradeNo;  //时间戳，用来生成订单号。
             return outTradeNo;
         }
-
     });
 </script>

@@ -19,6 +19,24 @@
         <if test="param.name != null  and param.name != '' ">
             AND g.name  LIKE CONCAT('%', #{param.name}, '%')
         </if>
+        <if test="param.status != null  and param.status != '' ">
+            AND iwd.status = #{param.status}
+        </if>
         group by iwd.update_time
+    </select>
+
+    <select id="selectInWarehouseDetail" resultType="java.util.Map">
+        SELECT imei,money,g.NAME  FROM
+        `in_warehouse_detail` iw
+        left join  goods g on g.id=iw.gid
+        where  iw.wid=#{param.wid} and iw.type=1
+        UNION ALL
+         SELECT imei,money,'手机维修' as NAME  FROM
+        `in_warehouse_detail` iw
+        where  iw.wid=#{param.wid} and iw.type=2
+        UNION ALL
+         SELECT imei,money,'手机饰品' as NAME  FROM
+        `in_warehouse_detail` iw
+        where  iw.wid=#{param.wid} and iw.type=3
     </select>
 </mapper>

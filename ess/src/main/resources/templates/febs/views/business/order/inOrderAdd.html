@@ -100,10 +100,10 @@
                return;
            }
             var $ele=$(' <tr>'
-                +'<td><input type="input" name="imei" class="layui-input" value=""/></td>'
+                +'<td><input type="input" name="imei" class="layui-input" value="" autocomplete="off"/></td>'
                 +'<td><span name="goodsName" gid=""></span></td>'
-                +'<td><input type="input" name="price" class="layui-input"/></td>'
-                +'<td><input type="input" name="num" class="layui-input" value="1" readonly="readonly"/></td>'
+                +'<td><input type="input" name="price" class="layui-input" autocomplete="off"/></td>'
+                +'<td><input type="input" name="num" class="layui-input" value="1" readonly="readonly" autocomplete="off"/></td>'
                 +'<td><button type="button"  class="layui-btn layui-btn-warm deleteinfo">删除</button></td>'
                 +'</tr>')
             $ele.find(".deleteinfo").click(function () {
